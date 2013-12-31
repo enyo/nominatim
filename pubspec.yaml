@@ -1,0 +1,5 @@
+name: nominatim
+description: Openstreetmap nominatim API.
+dependencies:
+  unittest: any
+  xml: any
