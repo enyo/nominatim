@@ -1,0 +1,187 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>XmlNodeType class / xml_utils_prujohn Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="xml_utils_prujohn" data-type="XmlNodeType">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../xml_utils_prujohn.html">xml_utils_prujohn</a> &rsaquo; <a href="../xml_utils_prujohn/XmlNodeType.html">XmlNodeType</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../nominatim.dart.html">nominatim.dart</a></h2><h2><div class="icon-library"></div><a href="../xml_utils_prujohn.html">xml_utils_prujohn</a></h2><ul class="icon">
+<li><a href="../xml_utils_prujohn/XML.html"><div class="icon-class"></div>XML</a></li>
+<li><a href="../xml_utils_prujohn/XmlAttribute.html"><div class="icon-class"></div>XmlAttribute</a></li>
+<li><a href="../xml_utils_prujohn/XmlCDATA.html"><div class="icon-class"></div>XmlCDATA</a></li>
+<li><a href="../xml_utils_prujohn/XmlCollection.html"><div class="icon-class"></div>XmlCollection&lt;E&gt;</a></li>
+<li><a href="../xml_utils_prujohn/XmlElement.html"><div class="icon-class"></div>XmlElement</a></li>
+<li><a href="../xml_utils_prujohn/XmlNamespace.html"><div class="icon-class"></div>XmlNamespace</a></li>
+<li><a href="../xml_utils_prujohn/XmlNode.html"><div class="icon-class"></div>XmlNode</a></li>
+<li><div class="icon-class"></div><strong>XmlNodeType</strong></li>
+<li><a href="../xml_utils_prujohn/XmlParser.html"><div class="icon-class"></div>XmlParser</a></li>
+<li><a href="../xml_utils_prujohn/XmlProcessingInstruction.html"><div class="icon-class"></div>XmlProcessingInstruction</a></li>
+<li><a href="../xml_utils_prujohn/XmlText.html"><div class="icon-class"></div>XmlText</a></li>
+<li><a href="../xml_utils_prujohn/XmlToken.html"><div class="icon-class"></div>XmlToken</a></li>
+<li><a href="../xml_utils_prujohn/XmlTokenizer.html"><div class="icon-class"></div>XmlTokenizer</a></li>
+<li><a href="../xml_utils_prujohn/XmlException.html"><div class="icon-exception"></div>XmlException</a></li>
+</ul>
+</div>
+<div class="content">
+        <h2><strong>XmlNodeType</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>Enumerates <a class="crossref" href="../xml_utils_prujohn/XmlNode.html">XmlNode</a> types.</p>
+<pre class="source">
+class XmlNodeType {
+ final String _type;
+
+ const XmlNodeType(this._type);
+
+ static const Element = const XmlNodeType('Element');
+ static const Attribute = const XmlNodeType('Attribute');
+ static const Text = const XmlNodeType('Text');
+ static const Namespace = const XmlNodeType('Namespace');
+ static const CDATA = const XmlNodeType('CDATA');
+ static const PI = const XmlNodeType('PI'); //Processing Instruction
+
+ String toString() =&gt; _type;
+}
+</pre>
+</div>
+<div>
+<h3>Static Properties</h3>
+<div class="field"><h4 id="Attribute">
+<button class="show-code">Code</button>
+const         <strong>Attribute</strong> <a class="anchor-link"
+            href="#Attribute"
+            title="Permalink to XmlNodeType.Attribute">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const Attribute = const XmlNodeType('Attribute')
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="CDATA">
+<button class="show-code">Code</button>
+const         <strong>CDATA</strong> <a class="anchor-link"
+            href="#CDATA"
+            title="Permalink to XmlNodeType.CDATA">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const CDATA = const XmlNodeType('CDATA')
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="Element">
+<button class="show-code">Code</button>
+const         <strong>Element</strong> <a class="anchor-link"
+            href="#Element"
+            title="Permalink to XmlNodeType.Element">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const Element = const XmlNodeType('Element')
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="Namespace">
+<button class="show-code">Code</button>
+const         <strong>Namespace</strong> <a class="anchor-link"
+            href="#Namespace"
+            title="Permalink to XmlNodeType.Namespace">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const Namespace = const XmlNodeType('Namespace')
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="PI">
+<button class="show-code">Code</button>
+const         <strong>PI</strong> <a class="anchor-link"
+            href="#PI"
+            title="Permalink to XmlNodeType.PI">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const PI = const XmlNodeType('PI')
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="Text">
+<button class="show-code">Code</button>
+const         <strong>Text</strong> <a class="anchor-link"
+            href="#Text"
+            title="Permalink to XmlNodeType.Text">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const Text = const XmlNodeType('Text')
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="">
+<button class="show-code">Code</button>
+const <strong>XmlNodeType</strong>(String _type) <a class="anchor-link" href="#"
+              title="Permalink to XmlNodeType.XmlNodeType">#</a></h4>
+<div class="doc">
+<div class="inherited">
+<p>Creates a new <a class="crossref" href="../dart_core/Object.html">Object</a> instance.</p>
+<p><a class="crossref" href="../dart_core/Object.html">Object</a> instances have no meaningful state, and are only useful
+through their identity. An <a class="crossref" href="../dart_core/Object.html">Object</a> instance is equal to itself
+only.</p>
+<div class="docs-inherited-from">docs inherited from Object </div></div>
+<pre class="source">
+const XmlNodeType(this._type);
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="toString">
+<button class="show-code">Code</button>
+String <strong>toString</strong>() <a class="anchor-link" href="#toString"
+              title="Permalink to XmlNodeType.toString">#</a></h4>
+<div class="doc">
+<div class="inherited">
+<p>Returns a string representation of this object.</p>
+<div class="docs-inherited-from">docs inherited from Object </div></div>
+<pre class="source">
+String toString() =&gt; _type;
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-12-31 15:01:30.816</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        

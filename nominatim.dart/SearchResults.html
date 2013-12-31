@@ -1,0 +1,196 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>SearchResults class / nominatim.dart Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="nominatim.dart" data-type="SearchResults">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../nominatim.dart.html">nominatim.dart</a> &rsaquo; <a href="../nominatim.dart/SearchResults.html">SearchResults</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../nominatim.dart.html">nominatim.dart</a></h2><ul class="icon">
+<li><a href="../nominatim.dart/Nominatim.html"><div class="icon-class"></div>Nominatim</a></li>
+<li><a href="../nominatim.dart/Place.html"><div class="icon-class"></div>Place</a></li>
+<li><div class="icon-class"></div><strong>SearchResults</strong></li>
+</ul>
+<h2><div class="icon-library"></div><a href="../xml_utils_prujohn.html">xml_utils_prujohn</a></h2></div>
+<div class="content">
+        <h2><strong>SearchResults</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>Holds information about an OpenStreetMap Nominatim SearchResult and
+the list of places returned.</p>
+<pre class="source">
+class SearchResults {
+ 
+ final List&lt;Place&gt; places;
+
+ final String timestamp;
+ 
+ final String attribution;
+
+ final String moreUrl;
+
+ final String queryString;
+ 
+ final bool polygon;
+ 
+ /**
+  * Creates a new [SearchResult] with given attributes.
+  */
+ SearchResults({ this.timestamp, this.attribution, this.moreUrl, this.queryString, this.polygon, this.places });
+ 
+ String toString() {
+   var string = new List();
+   string.add("SearchResult (${timestamp})");
+   
+   this.places.forEach((place) {
+     string.add("  - ${place.displayName}");
+   });
+   return string.join("\n");
+ }
+ 
+}
+</pre>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="">
+<button class="show-code">Code</button>
+new <strong>SearchResults</strong>({String timestamp, String attribution, String moreUrl, String queryString, bool polygon, List&lt;<a href="../nominatim.dart/Place.html">Place</a>&gt; places}) <a class="anchor-link" href="#"
+              title="Permalink to SearchResults.SearchResults">#</a></h4>
+<div class="doc">
+<p>Creates a new <code>SearchResult</code> with given attributes.</p>
+<pre class="source">
+SearchResults({ this.timestamp, this.attribution, this.moreUrl, this.queryString, this.polygon, this.places });
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="attribution">
+<button class="show-code">Code</button>
+final String         <strong>attribution</strong> <a class="anchor-link"
+            href="#attribution"
+            title="Permalink to SearchResults.attribution">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final String attribution
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="moreUrl">
+<button class="show-code">Code</button>
+final String         <strong>moreUrl</strong> <a class="anchor-link"
+            href="#moreUrl"
+            title="Permalink to SearchResults.moreUrl">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final String moreUrl
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="places">
+<button class="show-code">Code</button>
+final List&lt;<a href="../nominatim.dart/Place.html">Place</a>&gt;         <strong>places</strong> <a class="anchor-link"
+            href="#places"
+            title="Permalink to SearchResults.places">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final List&lt;Place&gt; places
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="polygon">
+<button class="show-code">Code</button>
+final bool         <strong>polygon</strong> <a class="anchor-link"
+            href="#polygon"
+            title="Permalink to SearchResults.polygon">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final bool polygon
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="queryString">
+<button class="show-code">Code</button>
+final String         <strong>queryString</strong> <a class="anchor-link"
+            href="#queryString"
+            title="Permalink to SearchResults.queryString">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final String queryString
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="timestamp">
+<button class="show-code">Code</button>
+final String         <strong>timestamp</strong> <a class="anchor-link"
+            href="#timestamp"
+            title="Permalink to SearchResults.timestamp">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final String timestamp
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="toString">
+<button class="show-code">Code</button>
+String <strong>toString</strong>() <a class="anchor-link" href="#toString"
+              title="Permalink to SearchResults.toString">#</a></h4>
+<div class="doc">
+<div class="inherited">
+<p>Returns a string representation of this object.</p>
+<div class="docs-inherited-from">docs inherited from Object </div></div>
+<pre class="source">
+String toString() {
+ var string = new List();
+ string.add("SearchResult (${timestamp})");
+ 
+ this.places.forEach((place) {
+   string.add("  - ${place.displayName}");
+ });
+ return string.join("\n");
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-12-31 15:01:30.665</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        

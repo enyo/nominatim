@@ -1,0 +1,194 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>XmlException class / xml_utils_prujohn Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="xml_utils_prujohn" data-type="XmlException">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../xml_utils_prujohn.html">xml_utils_prujohn</a> &rsaquo; <a href="../xml_utils_prujohn/XmlException.html">XmlException</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../nominatim.dart.html">nominatim.dart</a></h2><h2><div class="icon-library"></div><a href="../xml_utils_prujohn.html">xml_utils_prujohn</a></h2><ul class="icon">
+<li><a href="../xml_utils_prujohn/XML.html"><div class="icon-class"></div>XML</a></li>
+<li><a href="../xml_utils_prujohn/XmlAttribute.html"><div class="icon-class"></div>XmlAttribute</a></li>
+<li><a href="../xml_utils_prujohn/XmlCDATA.html"><div class="icon-class"></div>XmlCDATA</a></li>
+<li><a href="../xml_utils_prujohn/XmlCollection.html"><div class="icon-class"></div>XmlCollection&lt;E&gt;</a></li>
+<li><a href="../xml_utils_prujohn/XmlElement.html"><div class="icon-class"></div>XmlElement</a></li>
+<li><a href="../xml_utils_prujohn/XmlNamespace.html"><div class="icon-class"></div>XmlNamespace</a></li>
+<li><a href="../xml_utils_prujohn/XmlNode.html"><div class="icon-class"></div>XmlNode</a></li>
+<li><a href="../xml_utils_prujohn/XmlNodeType.html"><div class="icon-class"></div>XmlNodeType</a></li>
+<li><a href="../xml_utils_prujohn/XmlParser.html"><div class="icon-class"></div>XmlParser</a></li>
+<li><a href="../xml_utils_prujohn/XmlProcessingInstruction.html"><div class="icon-class"></div>XmlProcessingInstruction</a></li>
+<li><a href="../xml_utils_prujohn/XmlText.html"><div class="icon-class"></div>XmlText</a></li>
+<li><a href="../xml_utils_prujohn/XmlToken.html"><div class="icon-class"></div>XmlToken</a></li>
+<li><a href="../xml_utils_prujohn/XmlTokenizer.html"><div class="icon-class"></div>XmlTokenizer</a></li>
+<li><div class="icon-exception"></div><strong>XmlException</strong></li>
+</ul>
+</div>
+<div class="content">
+        <h2><strong>XmlException</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<pre class="source">
+class XmlException implements Exception {
+ final String msg;
+ final String debugXml;
+ final int errorLocation;
+
+ const XmlException(this.msg) :
+   debugXml = '',
+   errorLocation = 0;
+
+ const XmlException.withDebug(this.msg, this.debugXml, this.errorLocation);
+
+ String toString() {
+   if (debugXml == '') return 'Xml Exception: $msg';
+
+   StringBuffer s = new StringBuffer();
+   s.write('Xml Exception: $msg');
+   s.write('\r');
+
+   int bLoc = (errorLocation &lt; 41) ? 0 : errorLocation - 40;
+   int aLoc = (errorLocation &gt; debugXml.length - 41)
+       ? debugXml.length - 1
+       : errorLocation + 40;
+
+   s.write(debugXml.substring(bLoc, aLoc));
+   return s.toString();
+
+ }
+}
+</pre>
+</div>
+<h3>Implements</h3>
+<p>
+<span class="type-box"><span class="icon-exception"></span><a href="../dart_core/Exception.html">Exception</a></span></p>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="">
+<button class="show-code">Code</button>
+const <strong>XmlException</strong>(String msg) <a class="anchor-link" href="#"
+              title="Permalink to XmlException.XmlException">#</a></h4>
+<div class="doc">
+<div class="inherited">
+<p>Creates a new <a class="crossref" href="../dart_core/Object.html">Object</a> instance.</p>
+<p><a class="crossref" href="../dart_core/Object.html">Object</a> instances have no meaningful state, and are only useful
+through their identity. An <a class="crossref" href="../dart_core/Object.html">Object</a> instance is equal to itself
+only.</p>
+<div class="docs-inherited-from">docs inherited from Object </div></div>
+<pre class="source">
+const XmlException(this.msg) :
+ debugXml = '',
+ errorLocation = 0;
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="withDebug">
+<button class="show-code">Code</button>
+const <strong>XmlException.withDebug</strong>(String msg, String debugXml, int errorLocation) <a class="anchor-link" href="#withDebug"
+              title="Permalink to XmlException.XmlException.withDebug">#</a></h4>
+<div class="doc">
+<pre class="source">
+const XmlException.withDebug(this.msg, this.debugXml, this.errorLocation);
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="debugXml">
+<button class="show-code">Code</button>
+final String         <strong>debugXml</strong> <a class="anchor-link"
+            href="#debugXml"
+            title="Permalink to XmlException.debugXml">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final String debugXml
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="errorLocation">
+<button class="show-code">Code</button>
+final int         <strong>errorLocation</strong> <a class="anchor-link"
+            href="#errorLocation"
+            title="Permalink to XmlException.errorLocation">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final int errorLocation
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="msg">
+<button class="show-code">Code</button>
+final String         <strong>msg</strong> <a class="anchor-link"
+            href="#msg"
+            title="Permalink to XmlException.msg">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final String msg
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="toString">
+<button class="show-code">Code</button>
+String <strong>toString</strong>() <a class="anchor-link" href="#toString"
+              title="Permalink to XmlException.toString">#</a></h4>
+<div class="doc">
+<div class="inherited">
+<p>Returns a string representation of this object.</p>
+<div class="docs-inherited-from">docs inherited from Object </div></div>
+<pre class="source">
+String toString() {
+ if (debugXml == '') return 'Xml Exception: $msg';
+
+ StringBuffer s = new StringBuffer();
+ s.write('Xml Exception: $msg');
+ s.write('\r');
+
+ int bLoc = (errorLocation &lt; 41) ? 0 : errorLocation - 40;
+ int aLoc = (errorLocation &gt; debugXml.length - 41)
+     ? debugXml.length - 1
+     : errorLocation + 40;
+
+ s.write(debugXml.substring(bLoc, aLoc));
+ return s.toString();
+
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-12-31 15:01:30.797</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        

@@ -1,0 +1,224 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>Nominatim class / nominatim.dart Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="nominatim.dart" data-type="Nominatim">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../nominatim.dart.html">nominatim.dart</a> &rsaquo; <a href="../nominatim.dart/Nominatim.html">Nominatim</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../nominatim.dart.html">nominatim.dart</a></h2><ul class="icon">
+<li><div class="icon-class"></div><strong>Nominatim</strong></li>
+<li><a href="../nominatim.dart/Place.html"><div class="icon-class"></div>Place</a></li>
+<li><a href="../nominatim.dart/SearchResults.html"><div class="icon-class"></div>SearchResults</a></li>
+</ul>
+<h2><div class="icon-library"></div><a href="../xml_utils_prujohn.html">xml_utils_prujohn</a></h2></div>
+<div class="content">
+        <h2><strong>Nominatim</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>Class to use the <a href="http://wiki.openstreetmap.org/wiki/Nominatim">Nomatim API</a>
+for openstreetmap.</p>
+<pre class="source">
+class Nominatim {
+ 
+ final String baseUriSearch;
+ 
+ final String baseUriReverse;
+ 
+ Nominatim([ String this.baseUriSearch = 'http://nominatim.openstreetmap.org/search/', String this.baseUriReverse = 'http://nominatim.openstreetmap.org/reverse' ]);
+
+ static convertXmlToSearchResults(String xml) {
+   XmlElement tree = XML.parse(xml);
+   
+   List places = new List&lt;Place&gt;();
+   
+   tree.children.forEach((XmlElement placeXml) {
+     var place = new Place(
+         int.parse(placeXml.attributes['place_id']),
+         latitude: double.parse(placeXml.attributes['lat']),
+         longitude: double.parse(placeXml.attributes['lon']),
+         displayName: placeXml.attributes['display_name'],
+         importance: double.parse(placeXml.attributes['importance'])
+//            ,
+//            city: placeXml.query("city").
+     );
+     places.add(place);
+   });
+   
+   var searchResults = new SearchResults(
+       timestamp: tree.attributes['timestamp'],
+       attribution: tree.attributes['attribution'],
+       moreUrl: tree.attributes['more_url'],
+       queryString: tree.attributes['querystring'],
+       polygon: tree.attributes['polygon'] == "true" ? true : false,
+       places: places
+   );
+
+   return searchResults;    
+ }
+ 
+ Future&lt;SearchResults&gt; search(final String query) {
+   HttpClient client = new HttpClient();
+   var url = "${this.baseUriSearch}${Uri.encodeComponent(query)}?format=xml&amp;addressdetails=1";
+   return client.getUrl(Uri.parse(url))
+     .then((HttpClientRequest request) {
+       // Prepare the request then call close on it to send it.
+       return request.close();
+     })      
+     .then((HttpClientResponse response) {
+       return response.transform(UTF8.decoder).toList();
+     })
+     .then((List data) {
+       var xml = data.join('');
+       return convertXmlToSearchResults(xml);
+     });
+ }
+ 
+}
+</pre>
+</div>
+<div>
+<h3>Static Methods</h3>
+<div class="method"><h4 id="convertXmlToSearchResults">
+<button class="show-code">Code</button>
+dynamic <strong>convertXmlToSearchResults</strong>(String xml) <a class="anchor-link" href="#convertXmlToSearchResults"
+              title="Permalink to Nominatim.convertXmlToSearchResults">#</a></h4>
+<div class="doc">
+<pre class="source">
+static convertXmlToSearchResults(String xml) {
+ XmlElement tree = XML.parse(xml);
+ 
+ List places = new List&lt;Place&gt;();
+ 
+ tree.children.forEach((XmlElement placeXml) {
+   var place = new Place(
+       int.parse(placeXml.attributes['place_id']),
+       latitude: double.parse(placeXml.attributes['lat']),
+       longitude: double.parse(placeXml.attributes['lon']),
+       displayName: placeXml.attributes['display_name'],
+       importance: double.parse(placeXml.attributes['importance'])
+//            ,
+//            city: placeXml.query("city").
+   );
+   places.add(place);
+ });
+ 
+ var searchResults = new SearchResults(
+     timestamp: tree.attributes['timestamp'],
+     attribution: tree.attributes['attribution'],
+     moreUrl: tree.attributes['more_url'],
+     queryString: tree.attributes['querystring'],
+     polygon: tree.attributes['polygon'] == "true" ? true : false,
+     places: places
+ );
+
+ return searchResults;    
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="">
+<button class="show-code">Code</button>
+new <strong>Nominatim</strong>([String baseUriSearch = 'http://nominatim.openstreetmap.org/search/', String baseUriReverse = 'http://nominatim.openstreetmap.org/reverse']) <a class="anchor-link" href="#"
+              title="Permalink to Nominatim.Nominatim">#</a></h4>
+<div class="doc">
+<div class="inherited">
+<p>Creates a new <a class="crossref" href="../dart_core/Object.html">Object</a> instance.</p>
+<p><a class="crossref" href="../dart_core/Object.html">Object</a> instances have no meaningful state, and are only useful
+through their identity. An <a class="crossref" href="../dart_core/Object.html">Object</a> instance is equal to itself
+only.</p>
+<div class="docs-inherited-from">docs inherited from Object </div></div>
+<pre class="source">
+Nominatim([ String this.baseUriSearch = 'http://nominatim.openstreetmap.org/search/', String this.baseUriReverse = 'http://nominatim.openstreetmap.org/reverse' ]);
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="baseUriReverse">
+<button class="show-code">Code</button>
+final String         <strong>baseUriReverse</strong> <a class="anchor-link"
+            href="#baseUriReverse"
+            title="Permalink to Nominatim.baseUriReverse">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final String baseUriReverse
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="baseUriSearch">
+<button class="show-code">Code</button>
+final String         <strong>baseUriSearch</strong> <a class="anchor-link"
+            href="#baseUriSearch"
+            title="Permalink to Nominatim.baseUriSearch">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final String baseUriSearch
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="search">
+<button class="show-code">Code</button>
+Future&lt;<a href="../nominatim.dart/SearchResults.html">SearchResults</a>&gt; <strong>search</strong>(String query) <a class="anchor-link" href="#search"
+              title="Permalink to Nominatim.search">#</a></h4>
+<div class="doc">
+<pre class="source">
+Future&lt;SearchResults&gt; search(final String query) {
+ HttpClient client = new HttpClient();
+ var url = "${this.baseUriSearch}${Uri.encodeComponent(query)}?format=xml&amp;addressdetails=1";
+ return client.getUrl(Uri.parse(url))
+   .then((HttpClientRequest request) {
+     // Prepare the request then call close on it to send it.
+     return request.close();
+   })      
+   .then((HttpClientResponse response) {
+     return response.transform(UTF8.decoder).toList();
+   })
+   .then((List data) {
+     var xml = data.join('');
+     return convertXmlToSearchResults(xml);
+   });
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-12-31 15:01:30.649</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        

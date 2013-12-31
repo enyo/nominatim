@@ -1,0 +1,838 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>XmlTokenizer class / xml_utils_prujohn Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="xml_utils_prujohn" data-type="XmlTokenizer">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../xml_utils_prujohn.html">xml_utils_prujohn</a> &rsaquo; <a href="../xml_utils_prujohn/XmlTokenizer.html">XmlTokenizer</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../nominatim.dart.html">nominatim.dart</a></h2><h2><div class="icon-library"></div><a href="../xml_utils_prujohn.html">xml_utils_prujohn</a></h2><ul class="icon">
+<li><a href="../xml_utils_prujohn/XML.html"><div class="icon-class"></div>XML</a></li>
+<li><a href="../xml_utils_prujohn/XmlAttribute.html"><div class="icon-class"></div>XmlAttribute</a></li>
+<li><a href="../xml_utils_prujohn/XmlCDATA.html"><div class="icon-class"></div>XmlCDATA</a></li>
+<li><a href="../xml_utils_prujohn/XmlCollection.html"><div class="icon-class"></div>XmlCollection&lt;E&gt;</a></li>
+<li><a href="../xml_utils_prujohn/XmlElement.html"><div class="icon-class"></div>XmlElement</a></li>
+<li><a href="../xml_utils_prujohn/XmlNamespace.html"><div class="icon-class"></div>XmlNamespace</a></li>
+<li><a href="../xml_utils_prujohn/XmlNode.html"><div class="icon-class"></div>XmlNode</a></li>
+<li><a href="../xml_utils_prujohn/XmlNodeType.html"><div class="icon-class"></div>XmlNodeType</a></li>
+<li><a href="../xml_utils_prujohn/XmlParser.html"><div class="icon-class"></div>XmlParser</a></li>
+<li><a href="../xml_utils_prujohn/XmlProcessingInstruction.html"><div class="icon-class"></div>XmlProcessingInstruction</a></li>
+<li><a href="../xml_utils_prujohn/XmlText.html"><div class="icon-class"></div>XmlText</a></li>
+<li><a href="../xml_utils_prujohn/XmlToken.html"><div class="icon-class"></div>XmlToken</a></li>
+<li><div class="icon-class"></div><strong>XmlTokenizer</strong></li>
+<li><a href="../xml_utils_prujohn/XmlException.html"><div class="icon-exception"></div>XmlException</a></li>
+</ul>
+</div>
+<div class="content">
+        <h2><strong>XmlTokenizer</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>Returns tokenized parts of Xml document.</p>
+<pre class="source">
+class XmlTokenizer {
+ static const int TAB = 9;
+ static const int NEW_LINE = 10;
+ static const int CARRIAGE_RETURN = 13;
+ static const int SPACE = 32;
+ static const int QUOTE = 34;
+ static const int SQUOTE = 39;
+ static const int SLASH = 47;
+ static const int COLON = 58;
+ static const int LT = 60; //&lt;
+ static const int GT = 62; //&gt;
+ static const int EQ = 61; //=
+ static const int Q = 63;  //?
+ static const int B = 33;  //!
+ static const int DASH = 45; //-
+ static const int RBRACK = 93; //]
+
+ static const String ERR_UNEXPECTED_END = 'Tokenizer unexpectedly reached end of document';
+
+ static const List _reserved = const [LT, GT, B, COLON, SLASH, QUOTE,
+                                     SQUOTE, EQ];
+
+ static const List _whiteSpace = const[SPACE, TAB, NEW_LINE, CARRIAGE_RETURN];
+
+ static const _specialTags = const ['&lt;!--', '&lt;![CDATA[', '&lt;?', '&lt;/'];
+
+ final ListQueue&lt;XmlToken&gt; _buffer = new ListQueue&lt;XmlToken&gt;();
+ final List&lt;XmlToken&gt; _tokenized = new List&lt;XmlToken&gt;();
+ final String _xml;
+ int _length;
+ int _i = 0;
+ int _index = -1;
+ bool _isInTag = false;
+
+ int get lastTokenIndex =&gt; _index;
+
+ XmlTokenizer(this._xml)
+ {
+   _length = _xml.length;
+
+   var t = _next();
+   while(t != null){
+     _tokenized.add(t);
+     t = _next();
+   }
+ }
+
+ /**
+  * Returns the next token, or null if no tokens are available.
+  */
+ XmlToken next(){
+   if (_tokenized.isEmpty){
+     return null;
+   }
+
+   _index++;
+   return _tokenized.removeAt(0);
+ }
+
+
+ /**
+  * Returns -1 if the token is not found, otherwise returns the index of
+  * the first instance of the token in the token sequence.
+  */
+ int indexOfToken(XmlToken token, {start: 0}){
+   if (_tokenized.isEmpty) return -1;
+
+   if (start &lt; 0 || start &gt; _tokenized.length - 1){
+     throw new RangeError(0);
+   }
+
+   int i = start;
+   for(final t in _tokenized.skip(start).take(_tokenized.length - start)){
+     if (t.kind == token.kind){
+       if (t.kind == XmlToken.STRING){
+         if (t._str == token._str){
+           return i;
+         }
+       }else if (t.kind == XmlToken.QUOTE){
+         if (t.quoteKind == token.quoteKind){
+           return i;
+         }
+       }else{
+         return i;
+       }
+     }
+     i++;
+   }
+
+   return -1;
+
+ }
+
+ /**
+  * Performs a non-destructive look-ahead in the token list and tries to match
+  * the given [sequence] of tokens.
+  *
+  * Search will continue until the end of the token list, or until optional
+  * [until] sequence of tokens is found.
+  *
+  * Search begins at [index] = 0 unless otherwise specified.
+  */
+ bool lookAheadMatch(List&lt;XmlToken&gt; sequence,
+           {List&lt;XmlToken&gt; until: null, int index : 0})
+ {
+   if (index &lt; 0 || index &gt; _tokenized.length - 1) return false;
+   if (index + sequence.length &gt; _tokenized.length) return false;
+
+   var resultUntil = until == null
+       ? _tokenized.length
+       : _sequenceMatch(until, index, _tokenized.length);
+
+   if (resultUntil == -1) resultUntil = _tokenized.length;
+
+   var result = _sequenceMatch(sequence, index, resultUntil);
+
+   if (result == -1)
+   {
+     return false;
+   }
+   if (resultUntil &lt; result)
+   {
+     return false;
+   }
+
+   return true;
+ }
+
+ /**
+  * -1 if not found, otherwise returns start index of matching sequence
+  * in _tokenized. No boundary checks.
+  */
+ int _sequenceMatch(Iterable&lt;XmlToken&gt; sequence, int index, int until){
+   final result = indexOfToken(sequence.elementAt(0), start:index);
+
+   if (result == -1) return -1;
+
+   if (sequence.length == 1) return result;
+
+   return _sequenceMatch(
+       sequence.skip(1).take(sequence.length - 1),
+       result,
+       until);
+
+ }
+
+ XmlToken _next() {
+   void addToQueue(XmlToken token){
+     token._location = _i;
+     _buffer.addLast(token);
+   }
+
+   XmlToken getNextToken() {
+//      if (!_tq.isEmpty()){
+//        print('token: ${_tq.first()}, ${_tq.first()._str}');
+//      }
+     return _buffer.isEmpty ? null : _buffer.removeFirst();
+   }
+
+
+   // Returns the first char in the list that appears ahead.
+   int peekUntil(List chars){
+     int z = _i;
+
+     while (chars.indexOf(_xml.codeUnitAt(z)) == -1){
+       z++;
+       if (z &gt;= _length) break;
+     }
+
+     if (z &gt;= _length) return -1;
+
+     return _xml.codeUnitAt(z);
+   }
+
+   // Returns the index of the last char of a given word, if found from
+   // the current index onward; otherwise returns -1;
+   int matchWord(String word){
+     int z = _i;
+
+     for(int ii = 0; ii &lt; word.length; ii++){
+       if(_xml.codeUnitAt(z) != word.codeUnitAt(ii)) return -1;
+       z++;
+     }
+
+     return z - 1;
+   }
+
+   int nextNonWhitespace(int from){
+
+     while(isWhitespace(_xml.codeUnitAt(from))){
+       from++;
+     }
+     return from;
+   }
+
+   int nextWhitespace(int from){
+     while(!isWhitespace(_xml.codeUnitAt(from))){
+       from++;
+     }
+     return from;
+   }
+
+   // Peel off and return a token if there are any in the queue.
+   if (!_buffer.isEmpty) return getNextToken();
+
+   while(_i &lt; _length &amp;&amp; isWhitespace(_xml.codeUnitAt(_i)))
+     {
+       _i++;
+     }
+
+   if (_i == _length) return null;
+ //print('char: $_i code: ${_xml.charCodeAt(_i)} ' + _xml.substring(_i, _i+1));
+   final int char = _xml.codeUnitAt(_i);
+
+   switch(char){
+     case B:
+       _i++;
+       addToQueue(new XmlToken(XmlToken.BANG));
+       break;
+     case COLON:
+       _i++;
+       addToQueue(new XmlToken(XmlToken.COLON));
+       break;
+     case SLASH:
+       _i++;
+       addToQueue(new XmlToken(XmlToken.SLASH));
+       break;
+     case LT:
+       var found = '';
+       var endIndex = -1;
+
+       for(final tag in _specialTags){
+         var m = matchWord(tag);
+         if (m != -1){
+           found = tag;
+           endIndex = m;
+           break;
+         }
+       }
+
+       if (found == _specialTags[0]) {
+         addToQueue(new XmlToken(XmlToken.START_COMMENT));
+         _i = endIndex + 1;
+
+         var endComment = _xml.indexOf('--&gt;', _i);
+         var nestedTest = _xml.indexOf('&lt;!--', _i);
+
+         if (endComment == -1){
+           throw const XmlException('End comment tag not found.');
+         }
+
+         if (nestedTest != -1 &amp;&amp; nestedTest &lt; endComment){
+           throw const XmlException('Nested comments not allowed.');
+         }
+
+         addToQueue(new XmlToken.string(_xml.substring(_i, endComment)));
+         addToQueue(new XmlToken(XmlToken.END_COMMENT));
+         _i = endComment + 3;
+       } else if (found == _specialTags[1]) {
+         addToQueue(new XmlToken(XmlToken.START_CDATA));
+         _i = endIndex + 1;
+
+         var endCDATA = _xml.indexOf(']]&gt;', _i);
+         var nestedTest = _xml.indexOf('&lt;![CDATA[', _i);
+
+         if (endCDATA == -1){
+           throw const XmlException('End CDATA tag not found.');
+         }
+
+         if (nestedTest != -1 &amp;&amp; nestedTest &lt; endCDATA){
+           throw const XmlException('Nested CDATA not allowed.');
+         }
+
+         addToQueue(new XmlToken.string(_xml.substring(_i, endCDATA).trim()));
+         addToQueue(new XmlToken(XmlToken.END_CDATA));
+         _i = endCDATA + 3;
+       } else if (found == _specialTags[2]) {
+         addToQueue(new XmlToken(XmlToken.START_PI));
+         _i = endIndex + 1;
+
+         var endPI= _xml.indexOf('?&gt;', _i);
+         var nestedTest = _xml.indexOf('&lt;?', _i);
+
+         if (endPI == -1){
+           throw const XmlException('End PI tag not found.');
+         }
+
+         if (nestedTest != -1 &amp;&amp; nestedTest &lt; endPI){
+           throw const XmlException('Nested PI not allowed.');
+         }
+
+         addToQueue(new XmlToken.string(_xml.substring(_i, endPI).trim()));
+         addToQueue(new XmlToken(XmlToken.END_PI));
+         _i = endPI+ 2;
+       } else if (found == _specialTags[3]) {
+         addToQueue(new XmlToken(XmlToken.LT));
+         addToQueue(new XmlToken(XmlToken.SLASH));
+         _i = endIndex + 1;
+       } else {
+         //standard start tag
+         _i++;
+         addToQueue(new XmlToken(XmlToken.LT));
+         _i = nextNonWhitespace(_i);
+         int c = peekUntil([SPACE, COLON, GT]);
+         if (c == SPACE){
+           var _ii = _i;
+           _i = nextWhitespace(_ii);
+           addToQueue(new XmlToken.string(_xml.substring(_ii, _i)));
+           _i = nextNonWhitespace(_i);
+         }else if (c == COLON){
+           var _ii = _i;
+           _i = _xml.indexOf(':', _ii) + 1;
+           addToQueue(new XmlToken.string(_xml.substring(_ii, _i - 1)));
+           addToQueue(new XmlToken(XmlToken.COLON));
+           _ii = _xml.indexOf(new String.fromCharCode(peekUntil([SPACE, SLASH, GT])), _i);
+           addToQueue(new XmlToken.string(_xml.substring(_i, _ii)));
+           _i = nextNonWhitespace(_ii);
+         }else if (c == -1){
+           throw new XmlException(ERR_UNEXPECTED_END);
+         }
+         _isInTag = true;
+       }
+       break;
+     case GT:
+       _i++;
+       addToQueue(new XmlToken(XmlToken.GT));
+       _isInTag = false;
+       break;
+     case EQ:
+       _i++;
+       addToQueue(new XmlToken(XmlToken.EQ));
+       break;
+     case QUOTE:
+       _i++;
+       addToQueue(new XmlToken.quote(QUOTE));
+       if (_isInTag) {
+         if (peekUntil([QUOTE]) == QUOTE) {
+           var _ii = _i;
+           _i = _xml.indexOf('"', _ii);
+           addToQueue(new XmlToken.string(_xml.substring(_ii, _i)));
+
+           _i++;
+           addToQueue(new XmlToken.quote(QUOTE));
+         } else {
+           throw new XmlException(ERR_UNEXPECTED_END);
+         }
+       }
+       break;
+     case SQUOTE:
+       _i++;
+       addToQueue(new XmlToken.quote(SQUOTE));
+       if (_isInTag) {
+         if (peekUntil([SQUOTE]) == SQUOTE) {
+           var _ii = _i;
+           _i = _xml.indexOf("'", _ii);
+           addToQueue(new XmlToken.string(_xml.substring(_ii, _i)));
+
+           _i++;
+           addToQueue(new XmlToken.quote(SQUOTE));
+         } else {
+           throw new XmlException(ERR_UNEXPECTED_END);
+         }
+       }
+       break;
+     default:
+       var m = matchWord('xmlns:');
+       if (m != -1){
+         _i = m + 1;
+         addToQueue(new XmlToken(XmlToken.NAMESPACE));
+       }else{
+         final s = new StringBuffer();
+         while(_i &lt; _length &amp;&amp; !isReserved(_xml.codeUnitAt(_i))){
+           s.write(_xml.substring(_i, _i + 1));
+           _i++;
+         }
+         addToQueue(new XmlToken.string(s.toString().trim()));
+       }
+       break;
+   }
+   return getNextToken();
+ }
+
+ String toString() =&gt; '$_tokenized ::: Length: ${_tokenized.length}';
+
+ /**
+ * Returns true if the charCode is one of the special reserved
+ * charCodes
+ */
+ static bool isReserved(int c) =&gt; _reserved.indexOf(c) &gt; -1;
+
+ /**
+ * Returns true if the charCode is considered to be whitespace.
+ */
+ static bool isWhitespace(int c) =&gt; _whiteSpace.indexOf(c) &gt;= 0;
+
+}
+</pre>
+</div>
+<div>
+<h3>Static Properties</h3>
+<div class="field"><h4 id="B">
+<button class="show-code">Code</button>
+const int         <strong>B</strong> <a class="anchor-link"
+            href="#B"
+            title="Permalink to XmlTokenizer.B">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int B = 33
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="CARRIAGE_RETURN">
+<button class="show-code">Code</button>
+const int         <strong>CARRIAGE_RETURN</strong> <a class="anchor-link"
+            href="#CARRIAGE_RETURN"
+            title="Permalink to XmlTokenizer.CARRIAGE_RETURN">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int CARRIAGE_RETURN = 13
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="COLON">
+<button class="show-code">Code</button>
+const int         <strong>COLON</strong> <a class="anchor-link"
+            href="#COLON"
+            title="Permalink to XmlTokenizer.COLON">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int COLON = 58
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="DASH">
+<button class="show-code">Code</button>
+const int         <strong>DASH</strong> <a class="anchor-link"
+            href="#DASH"
+            title="Permalink to XmlTokenizer.DASH">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int DASH = 45
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="EQ">
+<button class="show-code">Code</button>
+const int         <strong>EQ</strong> <a class="anchor-link"
+            href="#EQ"
+            title="Permalink to XmlTokenizer.EQ">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int EQ = 61
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="ERR_UNEXPECTED_END">
+<button class="show-code">Code</button>
+const String         <strong>ERR_UNEXPECTED_END</strong> <a class="anchor-link"
+            href="#ERR_UNEXPECTED_END"
+            title="Permalink to XmlTokenizer.ERR_UNEXPECTED_END">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const String ERR_UNEXPECTED_END = 'Tokenizer unexpectedly reached end of document'
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="GT">
+<button class="show-code">Code</button>
+const int         <strong>GT</strong> <a class="anchor-link"
+            href="#GT"
+            title="Permalink to XmlTokenizer.GT">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int GT = 62
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="LT">
+<button class="show-code">Code</button>
+const int         <strong>LT</strong> <a class="anchor-link"
+            href="#LT"
+            title="Permalink to XmlTokenizer.LT">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int LT = 60
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="NEW_LINE">
+<button class="show-code">Code</button>
+const int         <strong>NEW_LINE</strong> <a class="anchor-link"
+            href="#NEW_LINE"
+            title="Permalink to XmlTokenizer.NEW_LINE">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int NEW_LINE = 10
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="Q">
+<button class="show-code">Code</button>
+const int         <strong>Q</strong> <a class="anchor-link"
+            href="#Q"
+            title="Permalink to XmlTokenizer.Q">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int Q = 63
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="QUOTE">
+<button class="show-code">Code</button>
+const int         <strong>QUOTE</strong> <a class="anchor-link"
+            href="#QUOTE"
+            title="Permalink to XmlTokenizer.QUOTE">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int QUOTE = 34
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="RBRACK">
+<button class="show-code">Code</button>
+const int         <strong>RBRACK</strong> <a class="anchor-link"
+            href="#RBRACK"
+            title="Permalink to XmlTokenizer.RBRACK">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int RBRACK = 93
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="SLASH">
+<button class="show-code">Code</button>
+const int         <strong>SLASH</strong> <a class="anchor-link"
+            href="#SLASH"
+            title="Permalink to XmlTokenizer.SLASH">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int SLASH = 47
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="SPACE">
+<button class="show-code">Code</button>
+const int         <strong>SPACE</strong> <a class="anchor-link"
+            href="#SPACE"
+            title="Permalink to XmlTokenizer.SPACE">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int SPACE = 32
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="SQUOTE">
+<button class="show-code">Code</button>
+const int         <strong>SQUOTE</strong> <a class="anchor-link"
+            href="#SQUOTE"
+            title="Permalink to XmlTokenizer.SQUOTE">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int SQUOTE = 39
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="TAB">
+<button class="show-code">Code</button>
+const int         <strong>TAB</strong> <a class="anchor-link"
+            href="#TAB"
+            title="Permalink to XmlTokenizer.TAB">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int TAB = 9
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Static Methods</h3>
+<div class="method"><h4 id="isReserved">
+<button class="show-code">Code</button>
+bool <strong>isReserved</strong>(int c) <a class="anchor-link" href="#isReserved"
+              title="Permalink to XmlTokenizer.isReserved">#</a></h4>
+<div class="doc">
+<p>Returns true if the charCode is one of the special reserved
+charCodes</p>
+<pre class="source">
+static bool isReserved(int c) =&gt; _reserved.indexOf(c) &gt; -1;
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="isWhitespace">
+<button class="show-code">Code</button>
+bool <strong>isWhitespace</strong>(int c) <a class="anchor-link" href="#isWhitespace"
+              title="Permalink to XmlTokenizer.isWhitespace">#</a></h4>
+<div class="doc">
+<p>Returns true if the charCode is considered to be whitespace.</p>
+<pre class="source">
+static bool isWhitespace(int c) =&gt; _whiteSpace.indexOf(c) &gt;= 0;
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="">
+<button class="show-code">Code</button>
+new <strong>XmlTokenizer</strong>(String _xml) <a class="anchor-link" href="#"
+              title="Permalink to XmlTokenizer.XmlTokenizer">#</a></h4>
+<div class="doc">
+<div class="inherited">
+<p>Creates a new <a class="crossref" href="../dart_core/Object.html">Object</a> instance.</p>
+<p><a class="crossref" href="../dart_core/Object.html">Object</a> instances have no meaningful state, and are only useful
+through their identity. An <a class="crossref" href="../dart_core/Object.html">Object</a> instance is equal to itself
+only.</p>
+<div class="docs-inherited-from">docs inherited from Object </div></div>
+<pre class="source">
+XmlTokenizer(this._xml)
+{
+ _length = _xml.length;
+
+ var t = _next();
+ while(t != null){
+   _tokenized.add(t);
+   t = _next();
+ }
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="lastTokenIndex">
+<button class="show-code">Code</button>
+final int         <strong>lastTokenIndex</strong> <a class="anchor-link"
+            href="#lastTokenIndex"
+            title="Permalink to XmlTokenizer.lastTokenIndex">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+int get lastTokenIndex =&gt; _index;
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="indexOfToken">
+<button class="show-code">Code</button>
+int <strong>indexOfToken</strong>(<a href="../xml_utils_prujohn/XmlToken.html">XmlToken</a> token, {start: 0}) <a class="anchor-link" href="#indexOfToken"
+              title="Permalink to XmlTokenizer.indexOfToken">#</a></h4>
+<div class="doc">
+<p>Returns -1 if the token is not found, otherwise returns the index of
+the first instance of the token in the token sequence.</p>
+<pre class="source">
+int indexOfToken(XmlToken token, {start: 0}){
+ if (_tokenized.isEmpty) return -1;
+
+ if (start &lt; 0 || start &gt; _tokenized.length - 1){
+   throw new RangeError(0);
+ }
+
+ int i = start;
+ for(final t in _tokenized.skip(start).take(_tokenized.length - start)){
+   if (t.kind == token.kind){
+     if (t.kind == XmlToken.STRING){
+       if (t._str == token._str){
+         return i;
+       }
+     }else if (t.kind == XmlToken.QUOTE){
+       if (t.quoteKind == token.quoteKind){
+         return i;
+       }
+     }else{
+       return i;
+     }
+   }
+   i++;
+ }
+
+ return -1;
+
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="lookAheadMatch">
+<button class="show-code">Code</button>
+bool <strong>lookAheadMatch</strong>(List&lt;<a href="../xml_utils_prujohn/XmlToken.html">XmlToken</a>&gt; sequence, {List&lt;<a href="../xml_utils_prujohn/XmlToken.html">XmlToken</a>&gt; until: null, int index: 0}) <a class="anchor-link" href="#lookAheadMatch"
+              title="Permalink to XmlTokenizer.lookAheadMatch">#</a></h4>
+<div class="doc">
+<p>Performs a non-destructive look-ahead in the token list and tries to match
+the given 
+<span class="param">sequence</span> of tokens.</p>
+<p>Search will continue until the end of the token list, or until optional
+
+<span class="param">until</span> sequence of tokens is found.</p>
+<p>Search begins at 
+<span class="param">index</span> = 0 unless otherwise specified.</p>
+<pre class="source">
+bool lookAheadMatch(List&lt;XmlToken&gt; sequence,
+         {List&lt;XmlToken&gt; until: null, int index : 0})
+{
+ if (index &lt; 0 || index &gt; _tokenized.length - 1) return false;
+ if (index + sequence.length &gt; _tokenized.length) return false;
+
+ var resultUntil = until == null
+     ? _tokenized.length
+     : _sequenceMatch(until, index, _tokenized.length);
+
+ if (resultUntil == -1) resultUntil = _tokenized.length;
+
+ var result = _sequenceMatch(sequence, index, resultUntil);
+
+ if (result == -1)
+ {
+   return false;
+ }
+ if (resultUntil &lt; result)
+ {
+   return false;
+ }
+
+ return true;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="next">
+<button class="show-code">Code</button>
+<a href="../xml_utils_prujohn/XmlToken.html">XmlToken</a> <strong>next</strong>() <a class="anchor-link" href="#next"
+              title="Permalink to XmlTokenizer.next">#</a></h4>
+<div class="doc">
+<p>Returns the next token, or null if no tokens are available.</p>
+<pre class="source">
+XmlToken next(){
+ if (_tokenized.isEmpty){
+   return null;
+ }
+
+ _index++;
+ return _tokenized.removeAt(0);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="toString">
+<button class="show-code">Code</button>
+String <strong>toString</strong>() <a class="anchor-link" href="#toString"
+              title="Permalink to XmlTokenizer.toString">#</a></h4>
+<div class="doc">
+<div class="inherited">
+<p>Returns a string representation of this object.</p>
+<div class="docs-inherited-from">docs inherited from Object </div></div>
+<pre class="source">
+String toString() =&gt; '$_tokenized ::: Length: ${_tokenized.length}';
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-12-31 15:01:30.842</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        

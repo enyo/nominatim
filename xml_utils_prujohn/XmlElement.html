@@ -1,0 +1,741 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>XmlElement class / xml_utils_prujohn Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="xml_utils_prujohn" data-type="XmlElement">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../xml_utils_prujohn.html">xml_utils_prujohn</a> &rsaquo; <a href="../xml_utils_prujohn/XmlElement.html">XmlElement</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../nominatim.dart.html">nominatim.dart</a></h2><h2><div class="icon-library"></div><a href="../xml_utils_prujohn.html">xml_utils_prujohn</a></h2><ul class="icon">
+<li><a href="../xml_utils_prujohn/XML.html"><div class="icon-class"></div>XML</a></li>
+<li><a href="../xml_utils_prujohn/XmlAttribute.html"><div class="icon-class"></div>XmlAttribute</a></li>
+<li><a href="../xml_utils_prujohn/XmlCDATA.html"><div class="icon-class"></div>XmlCDATA</a></li>
+<li><a href="../xml_utils_prujohn/XmlCollection.html"><div class="icon-class"></div>XmlCollection&lt;E&gt;</a></li>
+<li><div class="icon-class"></div><strong>XmlElement</strong></li>
+<li><a href="../xml_utils_prujohn/XmlNamespace.html"><div class="icon-class"></div>XmlNamespace</a></li>
+<li><a href="../xml_utils_prujohn/XmlNode.html"><div class="icon-class"></div>XmlNode</a></li>
+<li><a href="../xml_utils_prujohn/XmlNodeType.html"><div class="icon-class"></div>XmlNodeType</a></li>
+<li><a href="../xml_utils_prujohn/XmlParser.html"><div class="icon-class"></div>XmlParser</a></li>
+<li><a href="../xml_utils_prujohn/XmlProcessingInstruction.html"><div class="icon-class"></div>XmlProcessingInstruction</a></li>
+<li><a href="../xml_utils_prujohn/XmlText.html"><div class="icon-class"></div>XmlText</a></li>
+<li><a href="../xml_utils_prujohn/XmlToken.html"><div class="icon-class"></div>XmlToken</a></li>
+<li><a href="../xml_utils_prujohn/XmlTokenizer.html"><div class="icon-class"></div>XmlTokenizer</a></li>
+<li><a href="../xml_utils_prujohn/XmlException.html"><div class="icon-exception"></div>XmlException</a></li>
+</ul>
+</div>
+<div class="content">
+        <h2><strong>XmlElement</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>Represents an element node of XML.</p>
+<pre class="source">
+class XmlElement extends XmlNode {
+ final String name;
+
+ /**
+ * Gets a collection of children under this [XmlElement].
+ */
+ final XmlCollection&lt;XmlNode&gt; children =
+     new XmlCollection&lt;XmlNode&gt;._internal();
+
+ /**
+ * Gets a map of name/value attributue pairs associated with
+ * this [XmlElement].
+ */
+ final Map&lt;String, String&gt; attributes = new Map&lt;String, String&gt;();
+
+ /**
+ * Gets a map of name/uri namespace pairs associated with
+ * this [XmlElement].
+ */
+ final Map&lt;String, String&gt; namespaces = new Map&lt;String, String&gt;();
+
+ //final String namespace; //future
+
+ XmlElement(this.name, {Iterable&lt;XmlNode&gt; elements: const []}) :
+   super(XmlNodeType.Element) {
+   addChildren(elements);
+ }
+
+ /**
+ * Gets a [String] of any text within this [XmlElement].
+ */
+ String get text {
+   var tNodes = children.where((el) =&gt; el is XmlText);
+   if (tNodes.isEmpty) return '';
+
+   var s = new StringBuffer();
+   tNodes.forEach((XmlText n) =&gt; s.write(n.text));
+   return s.toString();
+ }
+
+ /**
+ * Gets a collection of siblings related to this [XmlElement].
+ */
+ Iterable&lt;XmlNode&gt; get siblings =&gt; parent.children;
+
+ /**
+ * Gets a collection of [XmlNamespace]s that are in scope to this
+ * [XmlElement].
+ */
+ Iterable&lt;XmlNamespace&gt; get namespacesInScope {
+   List&lt;XmlNamespace&gt; l = [];
+
+   namespaces.forEach((nname, uri){
+     l.add(new XmlNamespace(nname, uri));
+   });
+
+   if (parent != null &amp;&amp; parent is XmlElement){
+     l.addAll(parent.namespacesInScope);
+   }
+
+   return l;
+ }
+
+ /**
+ * Returns true if the given [namespace] name is found in the current
+ * scope of namespaces.
+ */
+ bool isNamespaceInScope(String namespace) =&gt;
+     namespacesInScope.any((ns) =&gt; ns.name == namespace);
+
+ /**
+ * Gets the previous sibling to the this [XmlElement], or null if none exists.
+ */
+ XmlNode get previousSibling {
+   var i = parent.children.indexOf(this);
+
+   if (i &lt;= 0) return null;
+
+   return parent.children[i - 1];
+ }
+
+ /**
+ * Gets the next sibling adjacent to this [XmlElement], or null if none
+ * exists.
+ */
+ XmlNode get nextSibling {
+   if (parent.children.last == this) return null;
+
+   var i = parent.children.indexOf(this);
+
+   return parent.children[i + 1];
+ }
+
+ /**
+ * Gets a boolean indicating of this [XmlElement] has any child elements.
+ */
+ bool get hasChildren =&gt; !children.isEmpty;
+
+ /**
+ * Adds a child [XmlNode] to this [XmlElement].
+ */
+ void addChild(XmlNode element){
+   //shunt any XmlAttributes into the map
+   if (element is XmlAttribute){
+     var xmlAttr = element as XmlAttribute;
+     attributes[xmlAttr.name] = xmlAttr.value;
+     return;
+   }
+
+   //shunt any XmlNamespaces into the map
+   if (element is XmlNamespace){
+     var xmlNamespc = element as XmlNamespace;
+     namespaces[xmlNamespc.name] = xmlNamespc.uri;
+     return;
+   }
+
+   element.parent = this;
+   children.add(element);
+ }
+
+ /**
+ * Adds a collection of [XmlNode]s to this [XmlElement].
+ */
+ void addChildren(Iterable&lt;XmlNode&gt; elements){
+   elements.forEach(addChild);
+ }
+
+ /**
+ * Returns the first node in the tree that matches the given [queryOn]
+ * parameter.
+ *
+ * ## Usage ##
+ * * query('tagName') // returns first occurance matching tag name.
+ * * query(XmlNodeType.CDATA) // returns first occurance of element matching
+ * the given node type (CDATA node in this example).
+ * * query({'attributeName':'attributeValue'}) // returns the first occurance
+ * of any [XmlElement] where the given attributes/values are found.
+ */
+ XmlCollection&lt;XmlNode&gt; query(queryOn){
+   XmlCollection&lt;XmlNode&gt; list = new XmlCollection._internal();
+
+   if (queryOn is String){
+     _queryNameInternal(queryOn, list);
+   }else if (queryOn is XmlNodeType){
+     _queryNodeTypeInternal(queryOn, list);
+   }else if (queryOn is Map){
+     _queryAttributeInternal(queryOn, list);
+   }
+
+   return list;
+ }
+
+
+ void _queryAttributeInternal(Map aMap, XmlCollection&lt;XmlNode&gt; list){
+   bool checkAttribs(){
+     var succeed = true;
+
+     //TODO needs better implementation to
+     //break out on first false
+     aMap.forEach((k, v){
+       if (succeed &amp;&amp; attributes.containsKey(k)) {
+         if (attributes[k] != v) succeed = false;
+       }else{
+         succeed = false;
+       }
+     });
+
+     return succeed;
+   }
+
+   if (checkAttribs()){
+     list.add(this);
+     return;
+   }else{
+     if (hasChildren){
+       children
+       .allElements()
+       .forEach((el){
+         if (!list.isEmpty) return;
+         el._queryAttributeInternal(aMap, list);
+       });
+     }
+   }
+ }
+
+ void _queryNodeTypeInternal(XmlNodeType nodeType,
+                             XmlCollection&lt;XmlNode&gt; list){
+   if (type == nodeType){
+     list.add(this);
+     return;
+   }else{
+     if (hasChildren){
+       children
+         .forEach((el){
+           if (!list.isEmpty) return;
+           if (el is XmlElement){
+             el._queryNodeTypeInternal(nodeType, list);
+           }else{
+             if (el.type == nodeType){
+               list.add(el);
+               return;
+             }
+           }
+         });
+     }
+   }
+ }
+
+ void _queryNameInternal(String tagName, XmlCollection&lt;XmlNode&gt; list){
+
+   if (this.name == tagName){
+     list.add(this);
+     return;
+   }else{
+     if (hasChildren){
+       children
+         .allElements()
+         .forEach((el){
+           if (!list.isEmpty) return;
+           el._queryNameInternal(tagName, list);
+         });
+     }
+   }
+ }
+
+ /**
+ * Returns a list of nodes in the tree that match the given [queryOn]
+ * parameter.
+ *
+ * ## Usage ##
+ * * query('tagName') = returns first occurance matching tag name.
+ * * query(XmlNodeType.CDATA) // returns first occurance of element matching
+ * the given node type (CDATA node in this example).
+ */
+ XmlCollection&lt;XmlNode&gt; queryAll(queryOn){
+   var list = new XmlCollection&lt;XmlNode&gt;._internal();
+
+   if (queryOn is String){
+     _queryAllNamesInternal(queryOn, list);
+   }else if (queryOn is XmlNodeType){
+     _queryAllNodeTypesInternal(queryOn, list);
+   }else if (queryOn is Map){
+     _queryAllAttributesInternal(queryOn, list);
+   }
+
+   return list;
+ }
+
+ void _queryAllAttributesInternal(Map aMap, XmlCollection&lt;XmlNode&gt; list){
+   bool checkAttribs(){
+     var succeed = true;
+
+     //TODO needs better implementation to
+     //break out on first false
+     aMap.forEach((k, v){
+       if (succeed &amp;&amp; attributes.containsKey(k)) {
+         if (attributes[k] != v) succeed = false;
+       }else{
+         succeed = false;
+       }
+     });
+
+     return succeed;
+   }
+
+   if (checkAttribs()){
+     list.add(this);
+   }else{
+     if (hasChildren){
+       children
+       .allElements()
+       .forEach((el){
+         el._queryAttributeInternal(aMap, list);
+       });
+     }
+   }
+ }
+
+ void _queryAllNodeTypesInternal(XmlNodeType nodeType, XmlCollection&lt;XmlNode&gt; list){
+   if (type == nodeType){
+     list.add(this);
+   }else{
+     if (hasChildren){
+       children
+         .forEach((el){
+           if (el is XmlElement){
+             el._queryAllNodeTypesInternal(nodeType, list);
+           }else{
+             if (el.type == nodeType){
+               list.add(el);
+             }
+           }
+         });
+     }
+   }
+ }
+
+ _queryAllNamesInternal(String tagName, XmlCollection&lt;XmlNode&gt; list){
+   if (this.name == tagName){
+     list.add(this);
+   }
+
+   if (hasChildren){
+     children
+     .where((el) =&gt; el is XmlElement)
+     .forEach((el){
+       el._queryAllNamesInternal(tagName, list);
+     });
+   }
+ }
+}
+</pre>
+</div>
+<h3>Extends</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../xml_utils_prujohn/XmlNode.html">XmlNode</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><strong>XmlElement</strong></span></p>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="">
+<button class="show-code">Code</button>
+new <strong>XmlElement</strong>(String name, {Iterable&lt;<a href="../xml_utils_prujohn/XmlNode.html">XmlNode</a>&gt; elements: const[] }) <a class="anchor-link" href="#"
+              title="Permalink to XmlElement.XmlElement">#</a></h4>
+<div class="doc">
+<div class="inherited">
+<p>Creates a new <a class="crossref" href="../dart_core/Object.html">Object</a> instance.</p>
+<p><a class="crossref" href="../dart_core/Object.html">Object</a> instances have no meaningful state, and are only useful
+through their identity. An <a class="crossref" href="../dart_core/Object.html">Object</a> instance is equal to itself
+only.</p>
+<div class="docs-inherited-from">docs inherited from Object </div></div>
+<pre class="source">
+XmlElement(this.name, {Iterable&lt;XmlNode&gt; elements: const []}) :
+ super(XmlNodeType.Element) {
+ addChildren(elements);
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="attributes">
+<button class="show-code">Code</button>
+final Map&lt;String, String&gt;         <strong>attributes</strong> <a class="anchor-link"
+            href="#attributes"
+            title="Permalink to XmlElement.attributes">#</a>
+        </h4>
+        <div class="doc">
+<p>Gets a map of name/value attributue pairs associated with
+this <a class="crossref" href="../xml_utils_prujohn/XmlElement.html">XmlElement</a>.</p>
+<pre class="source">
+final Map&lt;String, String&gt; attributes = new Map&lt;String, String&gt;()
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="children">
+<button class="show-code">Code</button>
+final <a href="../xml_utils_prujohn/XmlCollection.html">XmlCollection</a>&lt;<a href="../xml_utils_prujohn/XmlNode.html">XmlNode</a>&gt;         <strong>children</strong> <a class="anchor-link"
+            href="#children"
+            title="Permalink to XmlElement.children">#</a>
+        </h4>
+        <div class="doc">
+<p>Gets a collection of children under this <a class="crossref" href="../xml_utils_prujohn/XmlElement.html">XmlElement</a>.</p>
+<pre class="source">
+final XmlCollection&lt;XmlNode&gt; children =
+   new XmlCollection&lt;XmlNode&gt;._internal()
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="hasChildren">
+<button class="show-code">Code</button>
+final bool         <strong>hasChildren</strong> <a class="anchor-link"
+            href="#hasChildren"
+            title="Permalink to XmlElement.hasChildren">#</a>
+        </h4>
+        <div class="doc">
+<p>Gets a boolean indicating of this <a class="crossref" href="../xml_utils_prujohn/XmlElement.html">XmlElement</a> has any child elements.</p>
+<pre class="source">
+bool get hasChildren =&gt; !children.isEmpty;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="name">
+<button class="show-code">Code</button>
+final String         <strong>name</strong> <a class="anchor-link"
+            href="#name"
+            title="Permalink to XmlElement.name">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final String name
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="namespaces">
+<button class="show-code">Code</button>
+final Map&lt;String, String&gt;         <strong>namespaces</strong> <a class="anchor-link"
+            href="#namespaces"
+            title="Permalink to XmlElement.namespaces">#</a>
+        </h4>
+        <div class="doc">
+<p>Gets a map of name/uri namespace pairs associated with
+this <a class="crossref" href="../xml_utils_prujohn/XmlElement.html">XmlElement</a>.</p>
+<pre class="source">
+final Map&lt;String, String&gt; namespaces = new Map&lt;String, String&gt;()
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="namespacesInScope">
+<button class="show-code">Code</button>
+final Iterable&lt;<a href="../xml_utils_prujohn/XmlNamespace.html">XmlNamespace</a>&gt;         <strong>namespacesInScope</strong> <a class="anchor-link"
+            href="#namespacesInScope"
+            title="Permalink to XmlElement.namespacesInScope">#</a>
+        </h4>
+        <div class="doc">
+<p>Gets a collection of <a class="crossref" href="../xml_utils_prujohn/XmlNamespace.html">XmlNamespace</a>s that are in scope to this
+<a class="crossref" href="../xml_utils_prujohn/XmlElement.html">XmlElement</a>.</p>
+<pre class="source">
+Iterable&lt;XmlNamespace&gt; get namespacesInScope {
+ List&lt;XmlNamespace&gt; l = [];
+
+ namespaces.forEach((nname, uri){
+   l.add(new XmlNamespace(nname, uri));
+ });
+
+ if (parent != null &amp;&amp; parent is XmlElement){
+   l.addAll(parent.namespacesInScope);
+ }
+
+ return l;
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="nextSibling">
+<button class="show-code">Code</button>
+final <a href="../xml_utils_prujohn/XmlNode.html">XmlNode</a>         <strong>nextSibling</strong> <a class="anchor-link"
+            href="#nextSibling"
+            title="Permalink to XmlElement.nextSibling">#</a>
+        </h4>
+        <div class="doc">
+<p>Gets the next sibling adjacent to this <a class="crossref" href="../xml_utils_prujohn/XmlElement.html">XmlElement</a>, or null if none
+exists.</p>
+<pre class="source">
+XmlNode get nextSibling {
+ if (parent.children.last == this) return null;
+
+ var i = parent.children.indexOf(this);
+
+ return parent.children[i + 1];
+}
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="parent">
+<button class="show-code">Code</button>
+<a href="../xml_utils_prujohn/XmlElement.html">XmlElement</a>         <strong>parent</strong> <a class="anchor-link"
+            href="#parent"
+            title="Permalink to XmlElement.parent">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../xml_utils_prujohn/XmlNode.html">XmlNode</a> </div><div class="doc">
+<pre class="source">
+XmlElement parent
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="previousSibling">
+<button class="show-code">Code</button>
+final <a href="../xml_utils_prujohn/XmlNode.html">XmlNode</a>         <strong>previousSibling</strong> <a class="anchor-link"
+            href="#previousSibling"
+            title="Permalink to XmlElement.previousSibling">#</a>
+        </h4>
+        <div class="doc">
+<p>Gets the previous sibling to the this <a class="crossref" href="../xml_utils_prujohn/XmlElement.html">XmlElement</a>, or null if none exists.</p>
+<pre class="source">
+XmlNode get previousSibling {
+ var i = parent.children.indexOf(this);
+
+ if (i &lt;= 0) return null;
+
+ return parent.children[i - 1];
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="siblings">
+<button class="show-code">Code</button>
+final Iterable&lt;<a href="../xml_utils_prujohn/XmlNode.html">XmlNode</a>&gt;         <strong>siblings</strong> <a class="anchor-link"
+            href="#siblings"
+            title="Permalink to XmlElement.siblings">#</a>
+        </h4>
+        <div class="doc">
+<p>Gets a collection of siblings related to this <a class="crossref" href="../xml_utils_prujohn/XmlElement.html">XmlElement</a>.</p>
+<pre class="source">
+Iterable&lt;XmlNode&gt; get siblings =&gt; parent.children;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="text">
+<button class="show-code">Code</button>
+final String         <strong>text</strong> <a class="anchor-link"
+            href="#text"
+            title="Permalink to XmlElement.text">#</a>
+        </h4>
+        <div class="doc">
+<p>Gets a <a class="crossref" href="../dart_core/String.html">String</a> of any text within this <a class="crossref" href="../xml_utils_prujohn/XmlElement.html">XmlElement</a>.</p>
+<pre class="source">
+String get text {
+ var tNodes = children.where((el) =&gt; el is XmlText);
+ if (tNodes.isEmpty) return '';
+
+ var s = new StringBuffer();
+ tNodes.forEach((XmlText n) =&gt; s.write(n.text));
+ return s.toString();
+}
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="type">
+<button class="show-code">Code</button>
+final <a href="../xml_utils_prujohn/XmlNodeType.html">XmlNodeType</a>         <strong>type</strong> <a class="anchor-link"
+            href="#type"
+            title="Permalink to XmlElement.type">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../xml_utils_prujohn/XmlNode.html">XmlNode</a> </div><div class="doc">
+<pre class="source">
+final XmlNodeType type
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="addChild">
+<button class="show-code">Code</button>
+void <strong>addChild</strong>(<a href="../xml_utils_prujohn/XmlNode.html">XmlNode</a> element) <a class="anchor-link" href="#addChild"
+              title="Permalink to XmlElement.addChild">#</a></h4>
+<div class="doc">
+<p>Adds a child <a class="crossref" href="../xml_utils_prujohn/XmlNode.html">XmlNode</a> to this <a class="crossref" href="../xml_utils_prujohn/XmlElement.html">XmlElement</a>.</p>
+<pre class="source">
+void addChild(XmlNode element){
+ //shunt any XmlAttributes into the map
+ if (element is XmlAttribute){
+   var xmlAttr = element as XmlAttribute;
+   attributes[xmlAttr.name] = xmlAttr.value;
+   return;
+ }
+
+ //shunt any XmlNamespaces into the map
+ if (element is XmlNamespace){
+   var xmlNamespc = element as XmlNamespace;
+   namespaces[xmlNamespc.name] = xmlNamespc.uri;
+   return;
+ }
+
+ element.parent = this;
+ children.add(element);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="addChildren">
+<button class="show-code">Code</button>
+void <strong>addChildren</strong>(Iterable&lt;<a href="../xml_utils_prujohn/XmlNode.html">XmlNode</a>&gt; elements) <a class="anchor-link" href="#addChildren"
+              title="Permalink to XmlElement.addChildren">#</a></h4>
+<div class="doc">
+<p>Adds a collection of <a class="crossref" href="../xml_utils_prujohn/XmlNode.html">XmlNode</a>s to this <a class="crossref" href="../xml_utils_prujohn/XmlElement.html">XmlElement</a>.</p>
+<pre class="source">
+void addChildren(Iterable&lt;XmlNode&gt; elements){
+ elements.forEach(addChild);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="isNamespaceInScope">
+<button class="show-code">Code</button>
+bool <strong>isNamespaceInScope</strong>(String namespace) <a class="anchor-link" href="#isNamespaceInScope"
+              title="Permalink to XmlElement.isNamespaceInScope">#</a></h4>
+<div class="doc">
+<p>Returns true if the given 
+<span class="param">namespace</span> name is found in the current
+scope of namespaces.</p>
+<pre class="source">
+bool isNamespaceInScope(String namespace) =&gt;
+   namespacesInScope.any((ns) =&gt; ns.name == namespace);
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="query">
+<button class="show-code">Code</button>
+<a href="../xml_utils_prujohn/XmlCollection.html">XmlCollection</a>&lt;<a href="../xml_utils_prujohn/XmlNode.html">XmlNode</a>&gt; <strong>query</strong>(queryOn) <a class="anchor-link" href="#query"
+              title="Permalink to XmlElement.query">#</a></h4>
+<div class="doc">
+<p>Returns the first node in the tree that matches the given 
+<span class="param">queryOn</span>
+parameter.</p>
+<h2>Usage</h2><ul><li>query('tagName') // returns first occurance matching tag name.</li><li>
+<p>query(XmlNodeType.CDATA) // returns first occurance of element matching
+the given node type (CDATA node in this example).</p></li><li>
+<p>query({'attributeName':'attributeValue'}) // returns the first occurance
+of any <a class="crossref" href="../xml_utils_prujohn/XmlElement.html">XmlElement</a> where the given attributes/values are found.</p></li></ul>
+<pre class="source">
+XmlCollection&lt;XmlNode&gt; query(queryOn){
+ XmlCollection&lt;XmlNode&gt; list = new XmlCollection._internal();
+
+ if (queryOn is String){
+   _queryNameInternal(queryOn, list);
+ }else if (queryOn is XmlNodeType){
+   _queryNodeTypeInternal(queryOn, list);
+ }else if (queryOn is Map){
+   _queryAttributeInternal(queryOn, list);
+ }
+
+ return list;
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="queryAll">
+<button class="show-code">Code</button>
+<a href="../xml_utils_prujohn/XmlCollection.html">XmlCollection</a>&lt;<a href="../xml_utils_prujohn/XmlNode.html">XmlNode</a>&gt; <strong>queryAll</strong>(queryOn) <a class="anchor-link" href="#queryAll"
+              title="Permalink to XmlElement.queryAll">#</a></h4>
+<div class="doc">
+<p>Returns a list of nodes in the tree that match the given 
+<span class="param">queryOn</span>
+parameter.</p>
+<h2>Usage</h2><ul><li>query('tagName') = returns first occurance matching tag name.</li><li>
+<p>query(XmlNodeType.CDATA) // returns first occurance of element matching
+the given node type (CDATA node in this example).</p></li></ul>
+<pre class="source">
+XmlCollection&lt;XmlNode&gt; queryAll(queryOn){
+ var list = new XmlCollection&lt;XmlNode&gt;._internal();
+
+ if (queryOn is String){
+   _queryAllNamesInternal(queryOn, list);
+ }else if (queryOn is XmlNodeType){
+   _queryAllNodeTypesInternal(queryOn, list);
+ }else if (queryOn is Map){
+   _queryAllAttributesInternal(queryOn, list);
+ }
+
+ return list;
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="remove">
+<button class="show-code">Code</button>
+void <strong>remove</strong>() <a class="anchor-link" href="#remove"
+              title="Permalink to XmlElement.remove">#</a></h4>
+<div class="inherited-from">inherited from <a href="../xml_utils_prujohn/XmlNode.html">XmlNode</a> </div><div class="doc">
+<pre class="source">
+void remove(){
+ if (parent == null) return;
+
+ var i = parent.children.indexOf(this);
+ if (i == -1){
+   throw const XmlException('Element not found.');
+ }
+
+ parent.children.removeRange(i, 1);
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="toString">
+<button class="show-code">Code</button>
+String <strong>toString</strong>() <a class="anchor-link" href="#toString"
+              title="Permalink to XmlElement.toString">#</a></h4>
+<div class="inherited-from">inherited from <a href="../xml_utils_prujohn/XmlNode.html">XmlNode</a> </div><div class="doc">
+<p>Returns a text representation of the XmlNode tree.</p>
+<pre class="source">
+String toString() {
+ StringBuffer s = new StringBuffer();
+ _stringifyInternal(s, this, 0);
+ return s.toString();
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-12-31 15:01:30.865</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        

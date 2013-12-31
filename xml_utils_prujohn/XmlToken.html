@@ -1,0 +1,554 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>XmlToken class / xml_utils_prujohn Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="xml_utils_prujohn" data-type="XmlToken">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../xml_utils_prujohn.html">xml_utils_prujohn</a> &rsaquo; <a href="../xml_utils_prujohn/XmlToken.html">XmlToken</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../nominatim.dart.html">nominatim.dart</a></h2><h2><div class="icon-library"></div><a href="../xml_utils_prujohn.html">xml_utils_prujohn</a></h2><ul class="icon">
+<li><a href="../xml_utils_prujohn/XML.html"><div class="icon-class"></div>XML</a></li>
+<li><a href="../xml_utils_prujohn/XmlAttribute.html"><div class="icon-class"></div>XmlAttribute</a></li>
+<li><a href="../xml_utils_prujohn/XmlCDATA.html"><div class="icon-class"></div>XmlCDATA</a></li>
+<li><a href="../xml_utils_prujohn/XmlCollection.html"><div class="icon-class"></div>XmlCollection&lt;E&gt;</a></li>
+<li><a href="../xml_utils_prujohn/XmlElement.html"><div class="icon-class"></div>XmlElement</a></li>
+<li><a href="../xml_utils_prujohn/XmlNamespace.html"><div class="icon-class"></div>XmlNamespace</a></li>
+<li><a href="../xml_utils_prujohn/XmlNode.html"><div class="icon-class"></div>XmlNode</a></li>
+<li><a href="../xml_utils_prujohn/XmlNodeType.html"><div class="icon-class"></div>XmlNodeType</a></li>
+<li><a href="../xml_utils_prujohn/XmlParser.html"><div class="icon-class"></div>XmlParser</a></li>
+<li><a href="../xml_utils_prujohn/XmlProcessingInstruction.html"><div class="icon-class"></div>XmlProcessingInstruction</a></li>
+<li><a href="../xml_utils_prujohn/XmlText.html"><div class="icon-class"></div>XmlText</a></li>
+<li><div class="icon-class"></div><strong>XmlToken</strong></li>
+<li><a href="../xml_utils_prujohn/XmlTokenizer.html"><div class="icon-class"></div>XmlTokenizer</a></li>
+<li><a href="../xml_utils_prujohn/XmlException.html"><div class="icon-exception"></div>XmlException</a></li>
+</ul>
+</div>
+<div class="content">
+        <h2><strong>XmlToken</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<pre class="source">
+class XmlToken {
+ static const int LT = 1;
+ static const int GT = 2;
+ static const int QUESTION = 3;
+ static const int STRING = 4;
+ static const int BANG = 5;
+ static const int COLON = 6;
+ static const int SLASH = 7;
+ static const int EQ = 8;
+ static const int QUOTE = 9;
+ static const int IGNORE = 10;
+ static const int DASH = 11;
+ static const int START_COMMENT = 12;
+ static const int END_COMMENT = 13;
+ static const int START_CDATA = 14;
+ static const int END_CDATA = 15;
+ static const int START_PI = 16;
+ static const int END_PI = 17;
+ static const int NAMESPACE = 18;
+
+ final int kind;
+ final int quoteKind;
+ final String _str;
+ int _location;
+
+ XmlToken._internal(this.kind, this._str, this.quoteKind);
+
+ factory XmlToken.string(String s) {
+   return new XmlToken._internal(STRING, s, -1);
+ }
+
+ factory XmlToken.quote(int quoteKind){
+   return new XmlToken._internal(QUOTE, '', quoteKind);
+ }
+
+ factory XmlToken(int kind) {
+   return new XmlToken._internal(kind, '', -1);
+ }
+
+ String toString() {
+   switch(kind){
+     case START_PI:
+       return "(&lt;?)";
+     case END_PI:
+       return "(?&gt;)";
+     case DASH:
+       return "(-)";
+     case LT:
+       return "(&lt;)";
+     case GT:
+       return "(&gt;)";
+     case QUESTION:
+       return "(?)";
+     case STRING:
+       return 'STRING($_str)';
+     case BANG:
+       return "(!)";
+     case COLON:
+       return "(:)";
+     case SLASH:
+       return "(/)";
+     case EQ:
+       return "(=)";
+     case QUOTE:
+       return '(")';
+     case START_COMMENT:
+       return '(&lt;!--)';
+     case END_COMMENT:
+       return '(--&gt;)';
+     case START_CDATA:
+       return ('(&lt;![CDATA[)');
+     case END_CDATA:
+       return ('(]]&gt;)');
+     case NAMESPACE:
+       return ('xmlns');
+     case IGNORE:
+       return 'INVALID()';
+   }
+ }
+
+ String toStringLiteral() {
+   switch(kind){
+     case NAMESPACE:
+       return "xmlns";
+     case GT:
+       return "&gt;";
+     case LT:
+       return "&lt;";
+     case QUESTION:
+       return "?";
+     case STRING:
+       return _str;
+     case BANG:
+       return "!";
+     case COLON:
+       return ":";
+     case SLASH:
+       return "/";
+     case EQ:
+       return "=";
+     case QUOTE:
+       return quoteKind == XmlTokenizer.QUOTE ? '"' : "'";
+     case IGNORE:
+       return 'INVALID()';
+     default:
+       throw new XmlException('String literal unavailable for $this');
+   }
+ }
+}
+</pre>
+</div>
+<div>
+<h3>Static Properties</h3>
+<div class="field"><h4 id="BANG">
+<button class="show-code">Code</button>
+const int         <strong>BANG</strong> <a class="anchor-link"
+            href="#BANG"
+            title="Permalink to XmlToken.BANG">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int BANG = 5
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="COLON">
+<button class="show-code">Code</button>
+const int         <strong>COLON</strong> <a class="anchor-link"
+            href="#COLON"
+            title="Permalink to XmlToken.COLON">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int COLON = 6
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="DASH">
+<button class="show-code">Code</button>
+const int         <strong>DASH</strong> <a class="anchor-link"
+            href="#DASH"
+            title="Permalink to XmlToken.DASH">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int DASH = 11
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="END_CDATA">
+<button class="show-code">Code</button>
+const int         <strong>END_CDATA</strong> <a class="anchor-link"
+            href="#END_CDATA"
+            title="Permalink to XmlToken.END_CDATA">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int END_CDATA = 15
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="END_COMMENT">
+<button class="show-code">Code</button>
+const int         <strong>END_COMMENT</strong> <a class="anchor-link"
+            href="#END_COMMENT"
+            title="Permalink to XmlToken.END_COMMENT">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int END_COMMENT = 13
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="END_PI">
+<button class="show-code">Code</button>
+const int         <strong>END_PI</strong> <a class="anchor-link"
+            href="#END_PI"
+            title="Permalink to XmlToken.END_PI">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int END_PI = 17
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="EQ">
+<button class="show-code">Code</button>
+const int         <strong>EQ</strong> <a class="anchor-link"
+            href="#EQ"
+            title="Permalink to XmlToken.EQ">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int EQ = 8
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="GT">
+<button class="show-code">Code</button>
+const int         <strong>GT</strong> <a class="anchor-link"
+            href="#GT"
+            title="Permalink to XmlToken.GT">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int GT = 2
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="IGNORE">
+<button class="show-code">Code</button>
+const int         <strong>IGNORE</strong> <a class="anchor-link"
+            href="#IGNORE"
+            title="Permalink to XmlToken.IGNORE">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int IGNORE = 10
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="LT">
+<button class="show-code">Code</button>
+const int         <strong>LT</strong> <a class="anchor-link"
+            href="#LT"
+            title="Permalink to XmlToken.LT">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int LT = 1
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="NAMESPACE">
+<button class="show-code">Code</button>
+const int         <strong>NAMESPACE</strong> <a class="anchor-link"
+            href="#NAMESPACE"
+            title="Permalink to XmlToken.NAMESPACE">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int NAMESPACE = 18
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="QUESTION">
+<button class="show-code">Code</button>
+const int         <strong>QUESTION</strong> <a class="anchor-link"
+            href="#QUESTION"
+            title="Permalink to XmlToken.QUESTION">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int QUESTION = 3
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="QUOTE">
+<button class="show-code">Code</button>
+const int         <strong>QUOTE</strong> <a class="anchor-link"
+            href="#QUOTE"
+            title="Permalink to XmlToken.QUOTE">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int QUOTE = 9
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="SLASH">
+<button class="show-code">Code</button>
+const int         <strong>SLASH</strong> <a class="anchor-link"
+            href="#SLASH"
+            title="Permalink to XmlToken.SLASH">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int SLASH = 7
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="START_CDATA">
+<button class="show-code">Code</button>
+const int         <strong>START_CDATA</strong> <a class="anchor-link"
+            href="#START_CDATA"
+            title="Permalink to XmlToken.START_CDATA">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int START_CDATA = 14
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="START_COMMENT">
+<button class="show-code">Code</button>
+const int         <strong>START_COMMENT</strong> <a class="anchor-link"
+            href="#START_COMMENT"
+            title="Permalink to XmlToken.START_COMMENT">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int START_COMMENT = 12
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="START_PI">
+<button class="show-code">Code</button>
+const int         <strong>START_PI</strong> <a class="anchor-link"
+            href="#START_PI"
+            title="Permalink to XmlToken.START_PI">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int START_PI = 16
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="STRING">
+<button class="show-code">Code</button>
+const int         <strong>STRING</strong> <a class="anchor-link"
+            href="#STRING"
+            title="Permalink to XmlToken.STRING">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+static const int STRING = 4
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="">
+<button class="show-code">Code</button>
+factory <strong>XmlToken</strong>(int kind) <a class="anchor-link" href="#"
+              title="Permalink to XmlToken.XmlToken">#</a></h4>
+<div class="doc">
+<div class="inherited">
+<p>Creates a new <a class="crossref" href="../dart_core/Object.html">Object</a> instance.</p>
+<p><a class="crossref" href="../dart_core/Object.html">Object</a> instances have no meaningful state, and are only useful
+through their identity. An <a class="crossref" href="../dart_core/Object.html">Object</a> instance is equal to itself
+only.</p>
+<div class="docs-inherited-from">docs inherited from Object </div></div>
+<pre class="source">
+factory XmlToken(int kind) {
+ return new XmlToken._internal(kind, '', -1);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="quote">
+<button class="show-code">Code</button>
+factory <strong>XmlToken.quote</strong>(int quoteKind) <a class="anchor-link" href="#quote"
+              title="Permalink to XmlToken.XmlToken.quote">#</a></h4>
+<div class="doc">
+<pre class="source">
+factory XmlToken.quote(int quoteKind){
+ return new XmlToken._internal(QUOTE, '', quoteKind);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="string">
+<button class="show-code">Code</button>
+factory <strong>XmlToken.string</strong>(String s) <a class="anchor-link" href="#string"
+              title="Permalink to XmlToken.XmlToken.string">#</a></h4>
+<div class="doc">
+<pre class="source">
+factory XmlToken.string(String s) {
+ return new XmlToken._internal(STRING, s, -1);
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="kind">
+<button class="show-code">Code</button>
+final int         <strong>kind</strong> <a class="anchor-link"
+            href="#kind"
+            title="Permalink to XmlToken.kind">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final int kind
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="quoteKind">
+<button class="show-code">Code</button>
+final int         <strong>quoteKind</strong> <a class="anchor-link"
+            href="#quoteKind"
+            title="Permalink to XmlToken.quoteKind">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final int quoteKind
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="toString">
+<button class="show-code">Code</button>
+String <strong>toString</strong>() <a class="anchor-link" href="#toString"
+              title="Permalink to XmlToken.toString">#</a></h4>
+<div class="doc">
+<div class="inherited">
+<p>Returns a string representation of this object.</p>
+<div class="docs-inherited-from">docs inherited from Object </div></div>
+<pre class="source">
+String toString() {
+ switch(kind){
+   case START_PI:
+     return "(&lt;?)";
+   case END_PI:
+     return "(?&gt;)";
+   case DASH:
+     return "(-)";
+   case LT:
+     return "(&lt;)";
+   case GT:
+     return "(&gt;)";
+   case QUESTION:
+     return "(?)";
+   case STRING:
+     return 'STRING($_str)';
+   case BANG:
+     return "(!)";
+   case COLON:
+     return "(:)";
+   case SLASH:
+     return "(/)";
+   case EQ:
+     return "(=)";
+   case QUOTE:
+     return '(")';
+   case START_COMMENT:
+     return '(&lt;!--)';
+   case END_COMMENT:
+     return '(--&gt;)';
+   case START_CDATA:
+     return ('(&lt;![CDATA[)');
+   case END_CDATA:
+     return ('(]]&gt;)');
+   case NAMESPACE:
+     return ('xmlns');
+   case IGNORE:
+     return 'INVALID()';
+ }
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="toStringLiteral">
+<button class="show-code">Code</button>
+String <strong>toStringLiteral</strong>() <a class="anchor-link" href="#toStringLiteral"
+              title="Permalink to XmlToken.toStringLiteral">#</a></h4>
+<div class="doc">
+<pre class="source">
+String toStringLiteral() {
+ switch(kind){
+   case NAMESPACE:
+     return "xmlns";
+   case GT:
+     return "&gt;";
+   case LT:
+     return "&lt;";
+   case QUESTION:
+     return "?";
+   case STRING:
+     return _str;
+   case BANG:
+     return "!";
+   case COLON:
+     return ":";
+   case SLASH:
+     return "/";
+   case EQ:
+     return "=";
+   case QUOTE:
+     return quoteKind == XmlTokenizer.QUOTE ? '"' : "'";
+   case IGNORE:
+     return 'INVALID()';
+   default:
+     throw new XmlException('String literal unavailable for $this');
+ }
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-12-31 15:01:30.831</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        

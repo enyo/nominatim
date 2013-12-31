@@ -1,0 +1,110 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>XML class / xml_utils_prujohn Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="xml_utils_prujohn" data-type="XML">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../xml_utils_prujohn.html">xml_utils_prujohn</a> &rsaquo; <a href="../xml_utils_prujohn/XML.html">XML</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../nominatim.dart.html">nominatim.dart</a></h2><h2><div class="icon-library"></div><a href="../xml_utils_prujohn.html">xml_utils_prujohn</a></h2><ul class="icon">
+<li><div class="icon-class"></div><strong>XML</strong></li>
+<li><a href="../xml_utils_prujohn/XmlAttribute.html"><div class="icon-class"></div>XmlAttribute</a></li>
+<li><a href="../xml_utils_prujohn/XmlCDATA.html"><div class="icon-class"></div>XmlCDATA</a></li>
+<li><a href="../xml_utils_prujohn/XmlCollection.html"><div class="icon-class"></div>XmlCollection&lt;E&gt;</a></li>
+<li><a href="../xml_utils_prujohn/XmlElement.html"><div class="icon-class"></div>XmlElement</a></li>
+<li><a href="../xml_utils_prujohn/XmlNamespace.html"><div class="icon-class"></div>XmlNamespace</a></li>
+<li><a href="../xml_utils_prujohn/XmlNode.html"><div class="icon-class"></div>XmlNode</a></li>
+<li><a href="../xml_utils_prujohn/XmlNodeType.html"><div class="icon-class"></div>XmlNodeType</a></li>
+<li><a href="../xml_utils_prujohn/XmlParser.html"><div class="icon-class"></div>XmlParser</a></li>
+<li><a href="../xml_utils_prujohn/XmlProcessingInstruction.html"><div class="icon-class"></div>XmlProcessingInstruction</a></li>
+<li><a href="../xml_utils_prujohn/XmlText.html"><div class="icon-class"></div>XmlText</a></li>
+<li><a href="../xml_utils_prujohn/XmlToken.html"><div class="icon-class"></div>XmlToken</a></li>
+<li><a href="../xml_utils_prujohn/XmlTokenizer.html"><div class="icon-class"></div>XmlTokenizer</a></li>
+<li><a href="../xml_utils_prujohn/XmlException.html"><div class="icon-exception"></div>XmlException</a></li>
+</ul>
+</div>
+<div class="content">
+        <h2><strong>XML</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>Utility class to work with XML data.</p>
+<pre class="source">
+class XML {
+
+ /**
+ * Returns a [XmlElement] tree representing the raw XML fragment [String].
+ *
+ * Optional parameter [withQuirks] will allow the following when set to true:
+ *
+ * * Optional quotes for simple attribute values (no spaces).
+ */
+ static XmlElement parse(String xml, [withQuirks = false]) =&gt;
+     XmlParser._parse(xml.trim(), withQuirks);
+
+ /**
+ * Returns a stringified version of an [XmlElement] tree.
+ * You can also call .toString() on any [XmlElement].
+ */
+ static String stringify(XmlElement element) =&gt; element.toString();
+}
+</pre>
+</div>
+<div>
+<h3>Static Methods</h3>
+<div class="method"><h4 id="parse">
+<button class="show-code">Code</button>
+<a href="../xml_utils_prujohn/XmlElement.html">XmlElement</a> <strong>parse</strong>(String xml, [withQuirks = false]) <a class="anchor-link" href="#parse"
+              title="Permalink to XML.parse">#</a></h4>
+<div class="doc">
+<p>Returns a <a class="crossref" href="../xml_utils_prujohn/XmlElement.html">XmlElement</a> tree representing the raw XML fragment <a class="crossref" href="../dart_core/String.html">String</a>.</p>
+<p>Optional parameter 
+<span class="param">withQuirks</span> will allow the following when set to true:</p><ul><li>Optional quotes for simple attribute values (no spaces).</li></ul>
+<pre class="source">
+static XmlElement parse(String xml, [withQuirks = false]) =&gt;
+   XmlParser._parse(xml.trim(), withQuirks);
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="stringify">
+<button class="show-code">Code</button>
+String <strong>stringify</strong>(<a href="../xml_utils_prujohn/XmlElement.html">XmlElement</a> element) <a class="anchor-link" href="#stringify"
+              title="Permalink to XML.stringify">#</a></h4>
+<div class="doc">
+<p>Returns a stringified version of an <a class="crossref" href="../xml_utils_prujohn/XmlElement.html">XmlElement</a> tree.
+You can also call .toString() on any <a class="crossref" href="../xml_utils_prujohn/XmlElement.html">XmlElement</a>.</p>
+<pre class="source">
+static String stringify(XmlElement element) =&gt; element.toString();
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-12-31 15:01:30.869</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        

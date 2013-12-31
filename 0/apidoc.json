@@ -1,0 +1,1 @@
+{"name":"dart:","description":"Dart System Libraries","libraries":[{"refId":"nominatim.dart"},{"name":"package:xml/xml.dart","refId":"xml_utils_prujohn"}],"revision":"0","dependencies":[]}

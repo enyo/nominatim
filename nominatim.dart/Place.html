@@ -1,0 +1,319 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>Place class / nominatim.dart Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="nominatim.dart" data-type="Place">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../nominatim.dart.html">nominatim.dart</a> &rsaquo; <a href="../nominatim.dart/Place.html">Place</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../nominatim.dart.html">nominatim.dart</a></h2><ul class="icon">
+<li><a href="../nominatim.dart/Nominatim.html"><div class="icon-class"></div>Nominatim</a></li>
+<li><div class="icon-class"></div><strong>Place</strong></li>
+<li><a href="../nominatim.dart/SearchResults.html"><div class="icon-class"></div>SearchResults</a></li>
+</ul>
+<h2><div class="icon-library"></div><a href="../xml_utils_prujohn.html">xml_utils_prujohn</a></h2></div>
+<div class="content">
+        <h2><strong>Place</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>Holds information about an OpenStreetMap Nominatim Place.</p>
+<pre class="source">
+class Place {
+ 
+ 
+ /// E.g.: 1620612
+ final int id;
+ 
+ /// Latitude of this place
+ final double latitude;
+ 
+ /// Longitude of this place
+ final double longitude;
+ 
+ /// E.g.: 135, Pilkington Avenue, Wylde Green, City of Birmingham, West Midlands (county), B72, United Kingdom
+ final String displayName;
+ 
+ 
+ final double importance;
+   
+ /// E.g.: 135
+ final String house;
+ 
+ /// E.g.: Pilkington Avenue
+ final String road;
+ 
+ /// E.g.: City of Birmingham
+ final String city;
+ 
+ /// E.g.: Sutton Coldfield
+ final String town;
+ 
+ /// E.g.: Wylde Green
+ final String village;
+ 
+ /// E.g.: West Midlands (county)
+ final String county;
+ 
+ /// E.g.: Wien
+ final String state;
+ 
+ /// E.g.: B72
+ final String postcode;
+ 
+ /// E.g.: United Kingdom
+ final String country;
+ 
+ /// Two letter code
+ final String countryCode;
+
+ Place(this.id, { this.latitude, this.longitude, this.displayName, this.importance, this.city, this.county, this.state, this.country, this.countryCode, this.postcode, this.town, this.village, this.road, this.house });
+ 
+}
+</pre>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="">
+<button class="show-code">Code</button>
+new <strong>Place</strong>(int id, {double latitude, double longitude, String displayName, double importance, String city, String county, String state, String country, String countryCode, String postcode, String town, String village, String road, String house}) <a class="anchor-link" href="#"
+              title="Permalink to Place.Place">#</a></h4>
+<div class="doc">
+<div class="inherited">
+<p>Creates a new <a class="crossref" href="../dart_core/Object.html">Object</a> instance.</p>
+<p><a class="crossref" href="../dart_core/Object.html">Object</a> instances have no meaningful state, and are only useful
+through their identity. An <a class="crossref" href="../dart_core/Object.html">Object</a> instance is equal to itself
+only.</p>
+<div class="docs-inherited-from">docs inherited from Object </div></div>
+<pre class="source">
+Place(this.id, { this.latitude, this.longitude, this.displayName, this.importance, this.city, this.county, this.state, this.country, this.countryCode, this.postcode, this.town, this.village, this.road, this.house });
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="city">
+<button class="show-code">Code</button>
+final String         <strong>city</strong> <a class="anchor-link"
+            href="#city"
+            title="Permalink to Place.city">#</a>
+        </h4>
+        <div class="doc">
+<p>E.g.: City of Birmingham</p>
+<pre class="source">
+final String city
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="country">
+<button class="show-code">Code</button>
+final String         <strong>country</strong> <a class="anchor-link"
+            href="#country"
+            title="Permalink to Place.country">#</a>
+        </h4>
+        <div class="doc">
+<p>E.g.: United Kingdom</p>
+<pre class="source">
+final String country
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="countryCode">
+<button class="show-code">Code</button>
+final String         <strong>countryCode</strong> <a class="anchor-link"
+            href="#countryCode"
+            title="Permalink to Place.countryCode">#</a>
+        </h4>
+        <div class="doc">
+<p>Two letter code</p>
+<pre class="source">
+final String countryCode
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="county">
+<button class="show-code">Code</button>
+final String         <strong>county</strong> <a class="anchor-link"
+            href="#county"
+            title="Permalink to Place.county">#</a>
+        </h4>
+        <div class="doc">
+<p>E.g.: West Midlands (county)</p>
+<pre class="source">
+final String county
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="displayName">
+<button class="show-code">Code</button>
+final String         <strong>displayName</strong> <a class="anchor-link"
+            href="#displayName"
+            title="Permalink to Place.displayName">#</a>
+        </h4>
+        <div class="doc">
+<p>E.g.: 135, Pilkington Avenue, Wylde Green, City of Birmingham, West Midlands (county), B72, United Kingdom</p>
+<pre class="source">
+final String displayName
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="house">
+<button class="show-code">Code</button>
+final String         <strong>house</strong> <a class="anchor-link"
+            href="#house"
+            title="Permalink to Place.house">#</a>
+        </h4>
+        <div class="doc">
+<p>E.g.: 135</p>
+<pre class="source">
+final String house
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="id">
+<button class="show-code">Code</button>
+final int         <strong>id</strong> <a class="anchor-link"
+            href="#id"
+            title="Permalink to Place.id">#</a>
+        </h4>
+        <div class="doc">
+<p>E.g.: 1620612</p>
+<pre class="source">
+final int id
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="importance">
+<button class="show-code">Code</button>
+final double         <strong>importance</strong> <a class="anchor-link"
+            href="#importance"
+            title="Permalink to Place.importance">#</a>
+        </h4>
+        <div class="doc">
+<pre class="source">
+final double importance
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="latitude">
+<button class="show-code">Code</button>
+final double         <strong>latitude</strong> <a class="anchor-link"
+            href="#latitude"
+            title="Permalink to Place.latitude">#</a>
+        </h4>
+        <div class="doc">
+<p>Latitude of this place</p>
+<pre class="source">
+final double latitude
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="longitude">
+<button class="show-code">Code</button>
+final double         <strong>longitude</strong> <a class="anchor-link"
+            href="#longitude"
+            title="Permalink to Place.longitude">#</a>
+        </h4>
+        <div class="doc">
+<p>Longitude of this place</p>
+<pre class="source">
+final double longitude
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="postcode">
+<button class="show-code">Code</button>
+final String         <strong>postcode</strong> <a class="anchor-link"
+            href="#postcode"
+            title="Permalink to Place.postcode">#</a>
+        </h4>
+        <div class="doc">
+<p>E.g.: B72</p>
+<pre class="source">
+final String postcode
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="road">
+<button class="show-code">Code</button>
+final String         <strong>road</strong> <a class="anchor-link"
+            href="#road"
+            title="Permalink to Place.road">#</a>
+        </h4>
+        <div class="doc">
+<p>E.g.: Pilkington Avenue</p>
+<pre class="source">
+final String road
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="state">
+<button class="show-code">Code</button>
+final String         <strong>state</strong> <a class="anchor-link"
+            href="#state"
+            title="Permalink to Place.state">#</a>
+        </h4>
+        <div class="doc">
+<p>E.g.: Wien</p>
+<pre class="source">
+final String state
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="town">
+<button class="show-code">Code</button>
+final String         <strong>town</strong> <a class="anchor-link"
+            href="#town"
+            title="Permalink to Place.town">#</a>
+        </h4>
+        <div class="doc">
+<p>E.g.: Sutton Coldfield</p>
+<pre class="source">
+final String town
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="village">
+<button class="show-code">Code</button>
+final String         <strong>village</strong> <a class="anchor-link"
+            href="#village"
+            title="Permalink to Place.village">#</a>
+        </h4>
+        <div class="doc">
+<p>E.g.: Wylde Green</p>
+<pre class="source">
+final String village
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-12-31 15:01:30.659</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        
