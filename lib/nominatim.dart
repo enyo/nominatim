@@ -6,9 +6,13 @@ import "dart:convert";
 import "package:xml/xml.dart";
 
 
+/**
+ * Holds information about an OpenStreetMap Nominatim SearchResult and
+ * the list of places returned.
+ */
 class SearchResults {
   
-  List<Place> places = new List<Place>();
+  final List<Place> places;
 
   final String timestamp;
   
@@ -20,7 +24,10 @@ class SearchResults {
   
   final bool polygon;
   
-  SearchResults({ this.timestamp, this.attribution, this.moreUrl, this.queryString, this.polygon });
+  /**
+   * Creates a new [SearchResult] with given attributes.
+   */
+  SearchResults({ this.timestamp, this.attribution, this.moreUrl, this.queryString, this.polygon, this.places });
   
   String toString() {
     var string = new List();
@@ -34,25 +41,58 @@ class SearchResults {
   
 }
 
-
+/**
+ * Holds information about an OpenStreetMap Nominatim Place.
+ */
 class Place {
   
-  int id;
   
-  double latitude;
-  double longitude;
+  /// E.g.: 1620612
+  final int id;
   
-  String displayName;
+  /// Latitude of this place
+  final double latitude;
   
-  double importance;
+  /// Longitude of this place
+  final double longitude;
   
-  String city;
-  String county;
-  String state;
-  String country;
-  String countryCode;
+  /// E.g.: 135, Pilkington Avenue, Wylde Green, City of Birmingham, West Midlands (county), B72, United Kingdom
+  final String displayName;
+  
+  
+  final double importance;
+    
+  /// E.g.: 135
+  final String house;
+  
+  /// E.g.: Pilkington Avenue
+  final String road;
+  
+  /// E.g.: City of Birmingham
+  final String city;
+  
+  /// E.g.: Sutton Coldfield
+  final String town;
+  
+  /// E.g.: Wylde Green
+  final String village;
+  
+  /// E.g.: West Midlands (county)
+  final String county;
+  
+  /// E.g.: Wien
+  final String state;
+  
+  /// E.g.: B72
+  final String postcode;
+  
+  /// E.g.: United Kingdom
+  final String country;
+  
+  /// Two letter code
+  final String countryCode;
 
-  Place(this.id, { this.latitude, this.longitude, this.displayName, this.importance, this.city, this.county, this.state, this.country, this.countryCode });
+  Place(this.id, { this.latitude, this.longitude, this.displayName, this.importance, this.city, this.county, this.state, this.country, this.countryCode, this.postcode, this.town, this.village, this.road, this.house });
   
 }
 
@@ -71,13 +111,6 @@ class Nominatim {
  
   static convertXmlToSearchResults(String xml) {
     XmlElement tree = XML.parse(xml);
-    var searchResults = new SearchResults(
-        timestamp: tree.attributes['timestamp'],
-        attribution: tree.attributes['attribution'],
-        moreUrl: tree.attributes['more_url'],
-        queryString: tree.attributes['querystring'],
-        polygon: tree.attributes['polygon'] == "true" ? true : false
-    );
     
     List places = new List<Place>();
     
@@ -91,9 +124,18 @@ class Nominatim {
 //            ,
 //            city: placeXml.query("city").
       );
-      searchResults.places.add(place);
+      places.add(place);
     });
     
+    var searchResults = new SearchResults(
+        timestamp: tree.attributes['timestamp'],
+        attribution: tree.attributes['attribution'],
+        moreUrl: tree.attributes['more_url'],
+        queryString: tree.attributes['querystring'],
+        polygon: tree.attributes['polygon'] == "true" ? true : false,
+        places: places
+    );
+
     return searchResults;    
   }
   
