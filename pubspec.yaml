@@ -3,7 +3,7 @@ version: 0.0.1
 author: Matias Meno <m@tias.me>
 description: OpenStreetMap Nominatim API.
 homepage: https://github.com/enyo/nominatim
-documentation: http://enyo.github.com/nominatim/
+documentation: http://enyo.github.com/nominatim/nominatim.html
 dependencies:
   xml: '>=0.9.5 <0.9.6'
 dev_dependencies:
