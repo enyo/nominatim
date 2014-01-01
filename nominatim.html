@@ -1,0 +1,84 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>nominatim Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="favicon.ico">
+        
+        </head>
+        <body data-library="nominatim">
+        <div class="page">
+        <div class="header">
+          <a href="index.html"><div class="logo"></div></a>
+          <a href="index.html">Dart Documentation</a>
+         &rsaquo; <a href="nominatim.html">nominatim</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><strong>nominatim</strong></h2><ul class="icon">
+<li><a href="nominatim/Nominatim.html"><div class="icon-class"></div>Nominatim</a></li>
+<li><a href="nominatim/Place.html"><div class="icon-class"></div>Place</a></li>
+<li><a href="nominatim/SearchResults.html"><div class="icon-class"></div>SearchResults</a></li>
+</ul>
+</div>
+<div class="content">
+<h2><strong>nominatim</strong> library</h2>
+<div class="doc"><p>This library is basically a very simple layer for the <a href="http://wiki.openstreetmap.org/wiki/Nominatim">OpenStreetMap Nominatim API</a>,
+that takes your query and returns a <code>SearchResults</code> object so you don't have to
+take care of making the http request and parsing the results.</p>
+<p>Basic usage:</p>
+<pre><code>var nominatim = new Nominatim();
+nominatim.search("Paris, France").then((SearchResults results) {
+  for (Place place in results.places) {
+    print(place.displayName);
+    print(place.longitude);
+    print(place.latitude);
+  });
+});
+</code></pre>
+<p>If you want to use another <em>Nominatim</em> provider, you can do so like this:</p>
+<pre><code>// Using MapQuest as Nominatim service
+var nominatim = new Nominatim("open.mapquestapi.com",
+                              "nominatim/v1/search.php",
+                              "nominatim/v1/reverse.php");
+// Use nominatim as usual
+</code></pre></div>
+<div>
+<h3>Classes</h3>
+          <div class="type">
+          <h4>
+            <a href="nominatim/Nominatim.html"><strong>Nominatim</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="nominatim/Place.html"><strong>Place</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="nominatim/SearchResults.html"><strong>SearchResults</strong></a>
+          </h4>
+          </div>
+          
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2014-01-01 19:52:11.884</div>
+        </div>
+        <script async src="client-static.js"></script>
+        </body></html>
+        

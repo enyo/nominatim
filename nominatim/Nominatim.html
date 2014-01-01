@@ -1,0 +1,268 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>Nominatim class / nominatim Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="nominatim" data-type="Nominatim">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../nominatim.html">nominatim</a> &rsaquo; <a href="../nominatim/Nominatim.html">Nominatim</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../nominatim.html">nominatim</a></h2><ul class="icon">
+<li><div class="icon-class"></div><strong>Nominatim</strong></li>
+<li><a href="../nominatim/Place.html"><div class="icon-class"></div>Place</a></li>
+<li><a href="../nominatim/SearchResults.html"><div class="icon-class"></div>SearchResults</a></li>
+</ul>
+</div>
+<div class="content">
+        <h2><strong>Nominatim</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>Class to use the <a href="http://wiki.openstreetmap.org/wiki/Nominatim">Nomatim API</a>
+for openstreetmap.</p>
+<pre class="source">
+class Nominatim {
+ 
+ /// The authority part of the request.
+ /// 
+ /// E.g.: "open.mapquestapi.com"
+ final String uriAuthority;
+ 
+ /// The path of a search request.
+ /// 
+ /// E.g.: "nominatim/v1/search.php"
+ final String searchPath;
+ 
+ /// The path of a reverse request.
+ /// 
+ ///  E.g.: "nominatim/v1/reverse.php"
+ final String reversePath;
+ 
+ /**
+  * Create a configured instance of [Nominatim].
+  */
+ Nominatim([ String this.uriAuthority = 'nominatim.openstreetmap.org', String this.searchPath = 'search', String this.reversePath = 'reverse' ]);
+
+ static convertXmlToSearchResults(String xml) {
+   XmlElement tree = XML.parse(xml);
+   
+   List places = new List&lt;Place&gt;();
+   
+   for (XmlElement placeXml in tree.children) {
+     var place = new Place(
+         int.parse(placeXml.attributes['place_id']),
+         latitude: double.parse(placeXml.attributes['lat']),
+         longitude: double.parse(placeXml.attributes['lon']),
+         displayName: placeXml.attributes['display_name'],
+         importance: double.parse(placeXml.attributes['importance'])
+     );
+     places.add(place);
+   }
+   
+   var searchResults = new SearchResults(
+       timestamp: tree.attributes['timestamp'],
+       attribution: tree.attributes['attribution'],
+       moreUrl: tree.attributes['more_url'],
+       queryString: tree.attributes['querystring'],
+       polygon: tree.attributes['polygon'] == "true" ? true : false,
+       places: places
+   );
+
+   return searchResults;    
+ }
+ 
+ /**
+  * Queries the OpenStreetMap server for given query and returns a [SearchResults] instance.
+  * 
+  * The Uri to retrieve the places is defined with [uriAuthory] and [searchPath].
+  */
+ Future&lt;SearchResults&gt; search(final String query) {
+   HttpClient client = new HttpClient();
+
+   Uri uri = new Uri.http(this.uriAuthority, this.searchPath, { "q": query, "format": "xml", "addressdetails": "1" });
+   print(uri);
+
+//    uri.queryParameters["query"] = query;
+//    uri.queryParameters["format"] = "xml";
+//    uri.queryParameters["addressdetails"] = "1";
+
+   return client.getUrl(uri)
+     .then((HttpClientRequest request) {
+       // Prepare the request then call close on it to send it.
+       return request.close();
+     })      
+     .then((HttpClientResponse response) {
+       return response.transform(UTF8.decoder).toList();
+     })
+     .then((List data) {
+       var xml = data.join('');
+       return convertXmlToSearchResults(xml);
+     });
+ }
+ 
+}
+</pre>
+</div>
+<div>
+<h3>Static Methods</h3>
+<div class="method"><h4 id="convertXmlToSearchResults">
+<button class="show-code">Code</button>
+dynamic <strong>convertXmlToSearchResults</strong>(String xml) <a class="anchor-link" href="#convertXmlToSearchResults"
+              title="Permalink to Nominatim.convertXmlToSearchResults">#</a></h4>
+<div class="doc">
+<pre class="source">
+static convertXmlToSearchResults(String xml) {
+ XmlElement tree = XML.parse(xml);
+ 
+ List places = new List&lt;Place&gt;();
+ 
+ for (XmlElement placeXml in tree.children) {
+   var place = new Place(
+       int.parse(placeXml.attributes['place_id']),
+       latitude: double.parse(placeXml.attributes['lat']),
+       longitude: double.parse(placeXml.attributes['lon']),
+       displayName: placeXml.attributes['display_name'],
+       importance: double.parse(placeXml.attributes['importance'])
+   );
+   places.add(place);
+ }
+ 
+ var searchResults = new SearchResults(
+     timestamp: tree.attributes['timestamp'],
+     attribution: tree.attributes['attribution'],
+     moreUrl: tree.attributes['more_url'],
+     queryString: tree.attributes['querystring'],
+     polygon: tree.attributes['polygon'] == "true" ? true : false,
+     places: places
+ );
+
+ return searchResults;    
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="">
+<button class="show-code">Code</button>
+new <strong>Nominatim</strong>([String uriAuthority = 'nominatim.openstreetmap.org', String searchPath = 'search', String reversePath = 'reverse']) <a class="anchor-link" href="#"
+              title="Permalink to Nominatim.Nominatim">#</a></h4>
+<div class="doc">
+<p>Create a configured instance of <a class="crossref" href="../nominatim/Nominatim.html">Nominatim</a>.</p>
+<pre class="source">
+Nominatim([ String this.uriAuthority = 'nominatim.openstreetmap.org', String this.searchPath = 'search', String this.reversePath = 'reverse' ]);
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="reversePath">
+<button class="show-code">Code</button>
+final String         <strong>reversePath</strong> <a class="anchor-link"
+            href="#reversePath"
+            title="Permalink to Nominatim.reversePath">#</a>
+        </h4>
+        <div class="doc">
+<p>The path of a reverse request.</p>
+<p> E.g.: "nominatim/v1/reverse.php"</p>
+<pre class="source">
+final String reversePath
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="searchPath">
+<button class="show-code">Code</button>
+final String         <strong>searchPath</strong> <a class="anchor-link"
+            href="#searchPath"
+            title="Permalink to Nominatim.searchPath">#</a>
+        </h4>
+        <div class="doc">
+<p>The path of a search request.</p>
+<p>E.g.: "nominatim/v1/search.php"</p>
+<pre class="source">
+final String searchPath
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="uriAuthority">
+<button class="show-code">Code</button>
+final String         <strong>uriAuthority</strong> <a class="anchor-link"
+            href="#uriAuthority"
+            title="Permalink to Nominatim.uriAuthority">#</a>
+        </h4>
+        <div class="doc">
+<p>The authority part of the request.</p>
+<p>E.g.: "open.mapquestapi.com"</p>
+<pre class="source">
+final String uriAuthority
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="search">
+<button class="show-code">Code</button>
+Future&lt;<a href="../nominatim/SearchResults.html">SearchResults</a>&gt; <strong>search</strong>(String query) <a class="anchor-link" href="#search"
+              title="Permalink to Nominatim.search">#</a></h4>
+<div class="doc">
+<p>Queries the OpenStreetMap server for given query and returns a <a class="crossref" href="../nominatim/SearchResults.html">SearchResults</a> instance.</p>
+<p>The Uri to retrieve the places is defined with <code>uriAuthory</code> and <a class="crossref" href="../nominatim/Nominatim.html#searchPath">searchPath</a>.</p>
+<pre class="source">
+Future&lt;SearchResults&gt; search(final String query) {
+ HttpClient client = new HttpClient();
+
+ Uri uri = new Uri.http(this.uriAuthority, this.searchPath, { "q": query, "format": "xml", "addressdetails": "1" });
+ print(uri);
+
+//    uri.queryParameters["query"] = query;
+//    uri.queryParameters["format"] = "xml";
+//    uri.queryParameters["addressdetails"] = "1";
+
+ return client.getUrl(uri)
+   .then((HttpClientRequest request) {
+     // Prepare the request then call close on it to send it.
+     return request.close();
+   })      
+   .then((HttpClientResponse response) {
+     return response.transform(UTF8.decoder).toList();
+   })
+   .then((List data) {
+     var xml = data.join('');
+     return convertXmlToSearchResults(xml);
+   });
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2014-01-01 19:52:11.984</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        
