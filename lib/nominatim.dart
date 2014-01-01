@@ -9,6 +9,8 @@ import "package:xml/xml.dart";
 /**
  * Holds information about an OpenStreetMap Nominatim SearchResult and
  * the list of places returned.
+ * 
+ * An instance of this class is returned when using [Nominatim.search].
  */
 class SearchResults {
   
@@ -92,6 +94,9 @@ class Place {
   /// Two letter code
   final String countryCode;
 
+  /**
+   * Create a place instance. You get a list of those in a [SearchResults] object.
+   */
   Place(this.id, { this.latitude, this.longitude, this.displayName, this.importance, this.city, this.county, this.state, this.country, this.countryCode, this.postcode, this.town, this.village, this.road, this.house });
   
 }
@@ -103,29 +108,34 @@ class Place {
  */
 class Nominatim {
   
-  final String baseUriSearch;
+  final String uriAuthority;
   
-  final String baseUriReverse;
+  final String searchPath;
   
-  Nominatim([ String this.baseUriSearch = 'http://nominatim.openstreetmap.org/search/', String this.baseUriReverse = 'http://nominatim.openstreetmap.org/reverse' ]);
+  final String reversePath;
+  
+  /**
+   * Use any other URI String for the search.
+   * 
+   * E.g.: http://open.mapquestapi.com/nominatim/v1/search.php
+   */
+  Nominatim([ String this.uriAuthority = 'nominatim.openstreetmap.org', String this.searchPath = 'search', String this.reversePath = 'reverse' ]);
  
   static convertXmlToSearchResults(String xml) {
     XmlElement tree = XML.parse(xml);
     
     List places = new List<Place>();
     
-    tree.children.forEach((XmlElement placeXml) {
+    for (XmlElement placeXml in tree.children) {
       var place = new Place(
           int.parse(placeXml.attributes['place_id']),
           latitude: double.parse(placeXml.attributes['lat']),
           longitude: double.parse(placeXml.attributes['lon']),
           displayName: placeXml.attributes['display_name'],
           importance: double.parse(placeXml.attributes['importance'])
-//            ,
-//            city: placeXml.query("city").
       );
       places.add(place);
-    });
+    }
     
     var searchResults = new SearchResults(
         timestamp: tree.attributes['timestamp'],
@@ -139,10 +149,22 @@ class Nominatim {
     return searchResults;    
   }
   
+  /**
+   * Queries the OpenStreetMap server for given query and returns a [SearchResults] instance.
+   * 
+   * The Uri to retrieve the places is defined with [uriAuthory] and [searchPath].
+   */
   Future<SearchResults> search(final String query) {
     HttpClient client = new HttpClient();
-    var url = "${this.baseUriSearch}${Uri.encodeComponent(query)}?format=xml&addressdetails=1";
-    return client.getUrl(Uri.parse(url))
+
+    Uri uri = new Uri.http(this.uriAuthority, this.searchPath, { "q": query, "format": "xml", "addressdetails": "1" });
+    print(uri);
+
+//    uri.queryParameters["query"] = query;
+//    uri.queryParameters["format"] = "xml";
+//    uri.queryParameters["addressdetails"] = "1";
+
+    return client.getUrl(uri)
       .then((HttpClientRequest request) {
         // Prepare the request then call close on it to send it.
         return request.close();

@@ -24,7 +24,7 @@ import "package:nominatim/nominatim.dart";
 
 var nominatim = new Nominatim();
 nominatim.search("Paris, France").then((SearchResults results) {
-  results.places.forEach((Place place) {
+  for (Place place in results.places) {
     print(place.displayName);
     print(place.longitude);
     print(place.latitude);
