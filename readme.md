@@ -41,7 +41,9 @@ If you want to use another *Nominatim* provider, you can do so like this:
 ```dart
 import "package:nominatim/nominatim.dart";
 
-var nominatim = new Nominatim("open.mapquestapi.com", "nominatim/v1/search.php", "nominatim/v1/reverse.php");
+var nominatim = new Nominatim("open.mapquestapi.com",
+                              "nominatim/v1/search.php",
+                              "nominatim/v1/reverse.php");
 
 // Use nominatim as usual
 ```

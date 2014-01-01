@@ -1,105 +1,37 @@
-
+/**
+ * This library is basically a very simple layer for the [OpenStreetMap Nominatim API](http://wiki.openstreetmap.org/wiki/Nominatim),
+ * that takes your query and returns a `SearchResults` object so you don't have to
+ * take care of making the http request and parsing the results.
+ * 
+ * Basic usage:
+ * 
+ *     var nominatim = new Nominatim();
+ *     nominatim.search("Paris, France").then((SearchResults results) {
+ *       for (Place place in results.places) {
+ *         print(place.displayName);
+ *         print(place.longitude);
+ *         print(place.latitude);
+ *       });
+ *     });
+ * 
+ * If you want to use another *Nominatim* provider, you can do so like this:
+ * 
+ *     // Using MapQuest as Nominatim service
+ *     var nominatim = new Nominatim("open.mapquestapi.com",
+ *                                   "nominatim/v1/search.php",
+ *                                   "nominatim/v1/reverse.php");
+ *     // Use nominatim as usual
+ * 
+ */
+library nominatim;
 
 import "dart:async";
 import "dart:io";
 import "dart:convert";
 import "package:xml/xml.dart";
 
-
-/**
- * Holds information about an OpenStreetMap Nominatim SearchResult and
- * the list of places returned.
- * 
- * An instance of this class is returned when using [Nominatim.search].
- */
-class SearchResults {
-  
-  final List<Place> places;
-
-  final String timestamp;
-  
-  final String attribution;
- 
-  final String moreUrl;
-
-  final String queryString;
-  
-  final bool polygon;
-  
-  /**
-   * Creates a new [SearchResult] with given attributes.
-   */
-  SearchResults({ this.timestamp, this.attribution, this.moreUrl, this.queryString, this.polygon, this.places });
-  
-  String toString() {
-    var string = new List();
-    string.add("SearchResult (${timestamp})");
-    
-    this.places.forEach((place) {
-      string.add("  - ${place.displayName}");
-    });
-    return string.join("\n");
-  }
-  
-}
-
-/**
- * Holds information about an OpenStreetMap Nominatim Place.
- */
-class Place {
-  
-  
-  /// E.g.: 1620612
-  final int id;
-  
-  /// Latitude of this place
-  final double latitude;
-  
-  /// Longitude of this place
-  final double longitude;
-  
-  /// E.g.: 135, Pilkington Avenue, Wylde Green, City of Birmingham, West Midlands (county), B72, United Kingdom
-  final String displayName;
-  
-  
-  final double importance;
-    
-  /// E.g.: 135
-  final String house;
-  
-  /// E.g.: Pilkington Avenue
-  final String road;
-  
-  /// E.g.: City of Birmingham
-  final String city;
-  
-  /// E.g.: Sutton Coldfield
-  final String town;
-  
-  /// E.g.: Wylde Green
-  final String village;
-  
-  /// E.g.: West Midlands (county)
-  final String county;
-  
-  /// E.g.: Wien
-  final String state;
-  
-  /// E.g.: B72
-  final String postcode;
-  
-  /// E.g.: United Kingdom
-  final String country;
-  
-  /// Two letter code
-  final String countryCode;
-
-  /**
-   * Create a place instance. You get a list of those in a [SearchResults] object.
-   */
-  Place(this.id, { this.latitude, this.longitude, this.displayName, this.importance, this.city, this.county, this.state, this.country, this.countryCode, this.postcode, this.town, this.village, this.road, this.house });
-  
-}
+part "place.dart";
+part "search_results.dart";
 
 
 /**
@@ -108,16 +40,23 @@ class Place {
  */
 class Nominatim {
   
+  /// The authority part of the request.
+  /// 
+  /// E.g.: "open.mapquestapi.com"
   final String uriAuthority;
   
+  /// The path of a search request.
+  /// 
+  /// E.g.: "nominatim/v1/search.php"
   final String searchPath;
   
+  /// The path of a reverse request.
+  /// 
+  ///  E.g.: "nominatim/v1/reverse.php"
   final String reversePath;
   
   /**
-   * Use any other URI String for the search.
-   * 
-   * E.g.: http://open.mapquestapi.com/nominatim/v1/search.php
+   * Create a configured instance of [Nominatim].
    */
   Nominatim([ String this.uriAuthority = 'nominatim.openstreetmap.org', String this.searchPath = 'search', String this.reversePath = 'reverse' ]);
  
