@@ -5,6 +5,6 @@ description: OpenStreetMap Nominatim API.
 homepage: https://github.com/enyo/nominatim
 documentation: http://enyo.github.com/nominatim/nominatim.html
 dependencies:
-  xml: '>=0.9.5 <0.9.6'
+  xml: ^3.2.3
 dev_dependencies:
-  unittest: any
+  test: any
