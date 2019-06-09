@@ -1,4 +1,5 @@
-import "package:test/test.dart";
+//import "package:test/test.dart";
+import 'package:flutter_test/flutter_test.dart';
 import "package:nominatim/nominatim.dart";
 
 var testXml = """
@@ -35,7 +36,7 @@ var testXml = """
 main() {
   group("XML Parsing", () {
     test("extracts all SearchResults attributes properly", () {
-      SearchResults results = Nominatim.convertXmlToSearchResults(testXml);
+      SearchResults results = Nominatim.convertXmlToSearchResults(testXml) as SearchResults;
       
       expect(results.attribution, equals("Data © OpenStreetMap contributors, ODbL 1.0. http://www.openstreetmap.org/copyright"));
       expect(results.timestamp, equals("Sun, 29 Dec 13 14:47:50 +0000"));

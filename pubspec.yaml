@@ -7,8 +7,8 @@ documentation: http://enyo.github.com/nominatim/nominatim.html
 dependencies:
   xml: ^3.2.3
   flutter:
-    sdk: flutter
-  
+    sdk: flutter 
+    
 dev_dependencies:
   flutter_test:
     sdk: flutter
