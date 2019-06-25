@@ -95,6 +95,6 @@ class Nominatim {
     final data = await response.transform(utf8.decoder).toList();
 
     var xml = data.join('');
-    return convertXmlToSearchResults(xml) as Future<SearchResults>;
+    return convertXmlToSearchResults(xml);
   } 
 }
