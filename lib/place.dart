@@ -1,13 +1,9 @@
 part of nominatim;
 
-/**
- * Holds information about an OpenStreetMap Nominatim Place.
- * 
- * You normally access this through `SearchResults.places`.
- */
+/// Holds information about an OpenStreetMap Nominatim Place.
+///
+/// You normally access this through `SearchResults.places`.
 class Place {
-  
-  
   /// E.g.: 1620612
   final int id;
   
@@ -19,7 +15,6 @@ class Place {
   
   /// E.g.: 135, Pilkington Avenue, Wylde Green, City of Birmingham, West Midlands (county), B72, United Kingdom
   final String displayName;
-  
   
   final double importance;
     
@@ -53,9 +48,6 @@ class Place {
   /// Two letter code
   final String countryCode;
 
-  /**
-   * Create a place instance. You get a list of those in a [SearchResults] object.
-   */
+  /// Create a place instance. You get a list of those in a [SearchResults] object.
   Place(this.id, { this.latitude, this.longitude, this.displayName, this.importance, this.city, this.county, this.state, this.country, this.countryCode, this.postcode, this.town, this.village, this.road, this.house });
-  
 }

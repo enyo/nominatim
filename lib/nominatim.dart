@@ -1,45 +1,39 @@
-/**
- * This library is basically a very simple layer for the [OpenStreetMap Nominatim API](http://wiki.openstreetmap.org/wiki/Nominatim),
- * that takes your query and returns a `SearchResults` object so you don't have to
- * take care of making the http request and parsing the results.
- * 
- * Basic usage:
- * 
- *     var nominatim = new Nominatim();
- *     nominatim.search("Paris, France").then((SearchResults results) {
- *       for (Place place in results.places) {
- *         print(place.displayName);
- *         print(place.longitude);
- *         print(place.latitude);
- *       });
- *     });
- * 
- * If you want to use another *Nominatim* provider, you can do so like this:
- * 
- *     // Using MapQuest as Nominatim service
- *     var nominatim = new Nominatim("open.mapquestapi.com",
- *                                   "nominatim/v1/search.php",
- *                                   "nominatim/v1/reverse.php");
- *     // Use nominatim as usual
- * 
- */
+
+/// This library is basically a very simple layer for the [OpenStreetMap Nominatim API](http://wiki.openstreetmap.org/wiki/Nominatim),
+/// that takes your query and returns a `SearchResults` object so you don't have to
+/// take care of making the http request and parsing the results.
+/// 
+/// Basic usage:
+/// 
+///     var nominatim = new Nominatim();
+///     nominatim.search("Paris, France").then((SearchResults results) {
+///       for (Place place in results.places) {
+///         print(place.displayName);
+///         print(place.longitude);
+///         print(place.latitude);
+///       });
+///     });
+/// 
+/// If you want to use another///Nominatim* provider, you can do so like this:
+/// 
+///     // Using MapQuest as Nominatim service
+///     var nominatim = new Nominatim("open.mapquestapi.com",
+///                                   "nominatim/v1/search.php",
+///                                   "nominatim/v1/reverse.php");
+///     // Use nominatim as usual
 library nominatim;
 
 import "dart:async";
 import "dart:io";
 import "dart:convert";
-import "package:xml/xml.dart";
+import 'package:xml/xml.dart' as xml;
 
 part "place.dart";
 part "search_results.dart";
 
-
-/**
- * Class to use the [Nomatim API](http://wiki.openstreetmap.org/wiki/Nominatim)
- * for openstreetmap.
- */
+/// Class to use the [Nomatim API](http://wiki.openstreetmap.org/wiki/Nominatim)
+/// for openstreetmap.
 class Nominatim {
-  
   /// The authority part of the request.
   /// 
   /// E.g.: "open.mapquestapi.com"
@@ -55,66 +49,52 @@ class Nominatim {
   ///  E.g.: "nominatim/v1/reverse.php"
   final String reversePath;
   
-  /**
-   * Create a configured instance of [Nominatim].
-   */
-  Nominatim([ String this.uriAuthority = 'nominatim.openstreetmap.org', String this.searchPath = 'search', String this.reversePath = 'reverse' ]);
+  /// Create a configured instance of [Nominatim].
+  Nominatim([ this.uriAuthority = 'nominatim.openstreetmap.org', this.searchPath = 'search', this.reversePath = 'reverse' ]);
  
-  static convertXmlToSearchResults(String xml) {
-    XmlElement tree = XML.parse(xml);
-    
-    List places = new List<Place>();
-    
-    for (XmlElement placeXml in tree.children) {
-      var place = new Place(
-          int.parse(placeXml.attributes['place_id']),
-          latitude: double.parse(placeXml.attributes['lat']),
-          longitude: double.parse(placeXml.attributes['lon']),
-          displayName: placeXml.attributes['display_name'],
-          importance: double.parse(placeXml.attributes['importance'])
-      );
-      places.add(place);
-    }
-    
-    var searchResults = new SearchResults(
-        timestamp: tree.attributes['timestamp'],
-        attribution: tree.attributes['attribution'],
-        moreUrl: tree.attributes['more_url'],
-        queryString: tree.attributes['querystring'],
-        polygon: tree.attributes['polygon'] == "true" ? true : false,
+  static convertXmlToSearchResults(String rawXml) {
+    final rootNode = xml.parse(rawXml).rootElement;
+
+    final children = rootNode.findElements("place");
+    final places = children.map((node) => new Place(
+        int.parse(getXmlAttribute(node, 'place_id').value),
+        latitude: double.parse(getXmlAttribute(node, 'lat').value),
+        longitude: double.parse(getXmlAttribute(node, 'lon').value),
+        displayName: getXmlAttribute(node, 'display_name').value,
+        importance: double.parse(getXmlAttribute(node, 'importance').value)
+    )).toList();
+
+    return new SearchResults(
+        timestamp: getXmlAttribute(rootNode, 'timestamp').value,
+        attribution: getXmlAttribute(rootNode, 'attribution').value,
+        moreUrl: getXmlAttribute(rootNode, 'more_url').value,
+        queryString: getXmlAttribute(rootNode, 'querystring').value,
+        polygon: getXmlAttribute(rootNode, 'polygon').value == "true" ? true : false,
         places: places
     );
+  }
 
-    return searchResults;    
+  static xml.XmlAttribute getXmlAttribute<T>(xml.XmlNode node, String name) {
+    return node.attributes.firstWhere((n) => n.name.local == name, orElse: () => null);
   }
   
-  /**
-   * Queries the OpenStreetMap server for given query and returns a [SearchResults] instance.
-   * 
-   * The Uri to retrieve the places is defined with [uriAuthory] and [searchPath].
-   */
-  Future<SearchResults> search(final String query) {
+  /// Queries the OpenStreetMap server for given query and returns a [SearchResults] instance.
+  /// 
+  /// The Uri to retrieve the places is defined with [uriAuthory] and [searchPath].
+  Future<SearchResults> search(final String query) async {
     HttpClient client = new HttpClient();
 
-    Uri uri = new Uri.http(this.uriAuthority, this.searchPath, { "q": query, "format": "xml", "addressdetails": "1" });
-    print(uri);
+    Uri uri = new Uri.http(this.uriAuthority, this.searchPath, {
+      "q": query,
+      "format": "xml",
+      "addressdetails": "1" 
+    });
 
-//    uri.queryParameters["query"] = query;
-//    uri.queryParameters["format"] = "xml";
-//    uri.queryParameters["addressdetails"] = "1";
+    final request = await client.getUrl(uri);
+    final response = await request.close();
+    final data = await response.transform(utf8.decoder).toList();
 
-    return client.getUrl(uri)
-      .then((HttpClientRequest request) {
-        // Prepare the request then call close on it to send it.
-        return request.close();
-      })      
-      .then((HttpClientResponse response) {
-        return response.transform(UTF8.decoder).toList();
-      })
-      .then((List data) {
-        var xml = data.join('');
-        return convertXmlToSearchResults(xml);
-      });
-  }
-  
+    var xml = data.join('');
+    return convertXmlToSearchResults(xml);
+  } 
 }

@@ -5,6 +5,13 @@ description: OpenStreetMap Nominatim API.
 homepage: https://github.com/enyo/nominatim
 documentation: http://enyo.github.com/nominatim/nominatim.html
 dependencies:
-  xml: '>=0.9.5 <0.9.6'
+  xml: ^3.2.3
+  flutter:
+    sdk: flutter
+  
 dev_dependencies:
-  unittest: any
+  flutter_test:
+    sdk: flutter
+
+environment:
+  sdk: '>=2.0.0 <3.0.0'
